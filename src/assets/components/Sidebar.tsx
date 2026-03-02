@@ -1,16 +1,36 @@
+import { FaHome, FaCar, FaHistory, FaUserFriends, FaTruck, FaChartBar, FaSatelliteDish } from "react-icons/fa";
+
+const menuItems = [
+  { label: "Dashboard", icon: <FaHome /> },
+  { label: "Live Tracking", icon: <FaSatelliteDish /> },
+  { label: "Live History", icon: <FaHistory /> },
+  { label: "Vehicles", icon: <FaCar /> },
+  { label: "Drivers", icon: <FaUserFriends /> },
+  { label: "Reports", icon: <FaChartBar /> },
+];
+
 export default function Sidebar() {
   return (
-    <div className="w-64 bg-gray-800 p-5 space-y-6">
-      <h1 className="text-xl font-bold">Dashboard</h1>
-
-      <nav className="space-y-4 text-gray-300">
-        <p className="hover:text-white cursor-pointer">Dashboard</p>
-        <p className="hover:text-white cursor-pointer">Live Tracking</p>
-        <p className="hover:text-white cursor-pointer">Live History</p>
-        <p className="hover:text-white cursor-pointer">Drivers</p>
-        <p className="hover:text-white cursor-pointer">Vehicles</p>
-        <p className="hover:text-white cursor-pointer">Reports</p>
-      </nav>
-    </div>
+    <aside className="w-72 bg-transparent p-6 flex flex-col items-center">
+      <div className="w-full bg-gray-800 rounded-2xl shadow-lg border border-gray-700 py-6 px-4">
+        <h1 className="text-2xl font-bold text-white mb-8 flex items-center gap-2">
+          <FaHome className="text-xl" /> Dashboard
+        </h1>
+        <nav className="space-y-2">
+          {menuItems.map((item, idx) => (
+            <div
+              key={item.label}
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors text-gray-300 hover:text-white hover:bg-gray-700 ${idx === 0 ? "bg-gray-700 text-white" : ""}`}
+            >
+              <span className="text-lg">{item.icon}</span>
+              <span className="font-medium">{item.label}</span>
+              {item.label === "Live Tracking" || item.label === "Live History" || item.label === "Vehicles" ? (
+                <span className="ml-auto text-xs text-gray-400">&#8250;</span>
+              ) : null}
+            </div>
+          ))}
+        </nav>
+      </div>
+    </aside>
   );
 }
