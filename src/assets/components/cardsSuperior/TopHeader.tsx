@@ -1,6 +1,20 @@
-import { Car, Clock, Route, Bell } from "lucide-react";
+import { Car, Clock, Route, Bell, AlertTriangle, Users } from "lucide-react";
+import { useState } from "react";
 
 export default function TopHeader() {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  // Dados de exemplo para o dropdown
+  const avisos = [
+    { id: 1, titulo: "Excesso de Velocidade", desc: "Veiculo com excesso de velocidade", tempo: "2h atrás" },
+    { id: 2, titulo: "Motorista com ociosidade", desc: "Veiculo com Ociosidade em 15km", tempo: "1h atrás" },
+  ];
+
+  const desviosRota = [
+    { id: 1, motorista: "João Silva", destino: "Centro - Av. Paulista", desvio: "2km" },
+    { id: 2, motorista: "Pedro Santos", destino: "Zona Sul - Brooklin", desvio: "1.5km" },
+  ];
+
   return (
     <div className="w-full flex justify-between items-center mb-6">
 
@@ -64,12 +78,61 @@ export default function TopHeader() {
           </div>
         </div>
 
-        {/* Notificação */}
+        {/* Notificação com Dropdown */}
         <div className="relative mr-4">
-          <Bell className="text-white cursor-pointer" size={22} />
-          <span className="absolute -top-2 -right-2 bg-red-500 text-xs w-5 h-5 flex items-center justify-center rounded-full text-white">
-            4
-          </span>
+          <button 
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            className="relative focus:outline-none"
+          >
+            <Bell className="text-white cursor-pointer hover:text-cyan-400 transition" size={22} />
+            <span className="absolute -top-2 -right-2 bg-red-500 text-xs w-5 h-5 flex items-center justify-center rounded-full text-white">
+              {avisos.length + desviosRota.length}
+            </span>
+          </button>
+
+          {/* Dropdown Menu */}
+          {dropdownOpen && (
+            <div className="absolute right-0 mt-3 w-80 bg-slate-800 rounded-xl shadow-2xl border border-slate-700 overflow-hidden z-50">
+              
+              {/* Avisos */}
+              <div className="p-3 border-b border-slate-700">
+                <div className="flex items-center gap-2 mb-3">
+                  <Bell className="text-cyan-400" size={16} />
+                  <h3 className="text-white font-semibold text-sm">Avisos ({avisos.length})</h3>
+                </div>
+                <div className="space-y-2 max-h-32 overflow-y-auto">
+                  {avisos.map((aviso) => (
+                    <div key={aviso.id} className="bg-slate-700/50 p-2 rounded-lg hover:bg-slate-700 transition cursor-pointer">
+                      <p className="text-white text-sm font-medium">{aviso.titulo}</p>
+                      <p className="text-gray-400 text-xs">{aviso.desc}</p>
+                      <p className="text-cyan-400 text-xs mt-1">{aviso.tempo}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Desvios de Rota */}
+              <div className="p-3">
+                <div className="flex items-center gap-2 mb-3">
+                  <AlertTriangle className="text-yellow-400" size={16} />
+                  <h3 className="text-white font-semibold text-sm">Desvios de Rota ({desviosRota.length})</h3>
+                </div>
+                <div className="space-y-2 max-h-32 overflow-y-auto">
+                  {desviosRota.map((desvio) => (
+                    <div key={desvio.id} className="bg-slate-700/50 p-2 rounded-lg hover:bg-slate-700 transition cursor-pointer">
+                      <div className="flex items-center gap-2">
+                        <Users className="text-gray-400" size={14} />
+                        <p className="text-white text-sm font-medium">{desvio.motorista}</p>
+                      </div>
+                      <p className="text-gray-400 text-xs ml-6">{desvio.destino}</p>
+                      <p className="text-yellow-400 text-xs ml-6 mt-1">Desvio: {desvio.desvio}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+          )}
         </div>
 
       </div>
