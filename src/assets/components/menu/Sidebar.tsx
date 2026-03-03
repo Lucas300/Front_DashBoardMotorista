@@ -1,12 +1,12 @@
-import { FaHome, FaCar, FaHistory, FaUserFriends, FaTruck, FaChartBar, FaSatelliteDish } from "react-icons/fa";
+import { FaHome, FaCar, FaHistory, FaUserFriends, FaSatelliteDish } from "react-icons/fa";
 
 const menuItems = [
-  { label: "Dashboard", icon: <FaHome /> },
-  { label: "Live Tracking", icon: <FaSatelliteDish /> },
-  { label: "Live History", icon: <FaHistory /> },
-  { label: "Vehicles", icon: <FaCar /> },
-  { label: "Drivers", icon: <FaUserFriends /> },
-  { label: "Reports", icon: <FaChartBar /> },
+  { label: "Principal", icon: <FaHome /> },
+  { label: "Rastreamento", icon: <FaSatelliteDish /> },
+  { label: "histórico", icon: <FaHistory /> },
+  { label: "Veículos", icon: <FaCar /> },
+  { label: "Motoristas", icon: <FaUserFriends /> },
+  /*{ label: "Alertas", icon: <FaChartBar /> },*/
 ];
 
 export default function Sidebar() {
@@ -14,7 +14,7 @@ export default function Sidebar() {
     <aside className="w-72 bg-transparent p-6 flex flex-col items-center">
       <div className="w-full bg-gray-800 rounded-2xl shadow-lg border border-gray-700 py-6 px-4">
         <h1 className="text-2xl font-bold text-white mb-8 flex items-center gap-2">
-          <FaHome className="text-xl" /> Dashboard
+          <FaHome className="text-xl" /> Menu
         </h1>
         <nav className="space-y-2">
           {menuItems.map((item, idx) => (
