@@ -1,4 +1,3 @@
-import React from "react";
 import {
   GoogleMap,
   LoadScript,
@@ -38,7 +37,7 @@ const darkMapStyle = [
 export default function MapCard() {
   return (
     <section className="relative w-full">
-      <LoadScript googleMapsApiKey="SUA_API_KEY_AQUI">
+      <LoadScript googleMapsApiKey="AIzaSyDwTXVxmkgHWUeuDvcFKnX4vNtnlT1Nrx0">
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={ROUTE_COORDS[0]}
@@ -65,7 +64,7 @@ export default function MapCard() {
           <Marker
             position={ROUTE_COORDS[0]}
             icon={{
-              path: window.google.maps.SymbolPath.CIRCLE,
+              path: 0,
               scale: 8,
               fillColor: "#00BFFF",
               fillOpacity: 1,
@@ -78,7 +77,7 @@ export default function MapCard() {
           <Marker
             position={ROUTE_COORDS[ROUTE_COORDS.length - 1]}
             icon={{
-              path: window.google.maps.SymbolPath.CIRCLE,
+              path: 0,
               scale: 8,
               fillColor: "#00BFFF",
               fillOpacity: 1,
