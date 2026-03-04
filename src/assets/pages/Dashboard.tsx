@@ -6,6 +6,7 @@ import OverviewView from '../views/OverviewView';
 import DriversView from '../views/DriversView';
 import DriverTripsView from '../views/DriverTripsView';
 import TripDetailView from '../views/TripDetailView';
+import HistoryView from '../views/HistoryView';
 
 const Dashboard = () => {
     const [view, setView] = useState<ViewName>('overview');
@@ -51,6 +52,12 @@ const Dashboard = () => {
         navigate('trip_detail');
     }, [navigate]);
 
+    const handleHistoryTripClick = useCallback((trip: Trip, driver: Driver) => {
+        setSelectedTrip(trip);
+        setSelectedDriver(driver);
+        navigate('trip_detail');
+    }, [navigate]);
+
     const driverTrips = selectedDriver
         ? MOCK_TRIPS.filter((t) => t.driverId === selectedDriver.id)
         : [];
@@ -90,6 +97,15 @@ const Dashboard = () => {
                         onBack={goBack}
                     />
                 ) : null;
+            case 'history':
+                return (
+                    <HistoryView
+                        trips={MOCK_TRIPS}
+                        drivers={MOCK_DRIVERS}
+                        onTripClick={handleHistoryTripClick}
+                        onBack={goBack}
+                    />
+                );
             default:
                 return null;
         }

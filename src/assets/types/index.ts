@@ -1,6 +1,6 @@
 export type DriverStatus = 'online' | 'offline' | 'em_rota' | 'pausado';
 export type TripStatus = 'em_andamento' | 'concluida' | 'cancelada';
-export type ViewName = 'overview' | 'drivers' | 'driver_trips' | 'trip_detail';
+export type ViewName = 'overview' | 'drivers' | 'driver_trips' | 'trip_detail' | 'history';
 
 export interface RoutePoint {
   lat: number;
