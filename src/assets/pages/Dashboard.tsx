@@ -14,6 +14,7 @@ const Dashboard = () => {
     const [selectedDriver, setSelectedDriver] = useState<Driver | null>(null);
     const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
     const [animKey, setAnimKey] = useState(0);
+    const [alertsFilter, setAlertsFilter] = useState(false);
 
     const navigate = useCallback((next: ViewName) => {
         setViewHistory((prev) => [...prev, view]);
@@ -34,6 +35,7 @@ const Dashboard = () => {
         setSelectedDriver(null);
         setSelectedTrip(null);
         setViewHistory([]);
+        setAlertsFilter(false);
         setView(navView);
         setAnimKey((k) => k + 1);
     }, []);
@@ -58,6 +60,19 @@ const Dashboard = () => {
         navigate('trip_detail');
     }, [navigate]);
 
+    const handleTripsClick = useCallback(() => {
+        navigate('history');
+    }, [navigate]);
+
+    const handleAlertsClick = useCallback(() => {
+        setAlertsFilter(true);
+        navigate('vehicles');
+    }, [navigate]);
+
+    const handleIdleRankingClick = useCallback(() => {
+        navigate('idle_ranking');
+    }, [navigate]);
+
     const driverTrips = selectedDriver
         ? MOCK_TRIPS.filter((t) => t.driverId === selectedDriver.id)
         : [];
@@ -70,6 +85,9 @@ const Dashboard = () => {
                         drivers={MOCK_DRIVERS}
                         onViewDrivers={handleViewDrivers}
                         onDriverClick={handleDriverClick}
+                        onTripsClick={handleTripsClick}
+                        onAlertsClick={handleAlertsClick}
+                        onIdleRankingClick={handleIdleRankingClick}
                     />
                 );
             case 'drivers':
@@ -103,6 +121,24 @@ const Dashboard = () => {
                         trips={MOCK_TRIPS}
                         drivers={MOCK_DRIVERS}
                         onTripClick={handleHistoryTripClick}
+                        onBack={goBack}
+                    />
+                );
+            case 'idle_ranking':
+                return (
+                    <DriversView
+                        drivers={[...MOCK_DRIVERS].sort((a, b) => b.idleKm - a.idleKm)}
+                        onDriverClick={handleDriverClick}
+                        onBack={goBack}
+                    />
+                );
+            case 'vehicles':
+                return (
+                    <DriversView
+                        drivers={alertsFilter 
+                            ? MOCK_DRIVERS.filter(d => d.status === 'em_rota')
+                            : MOCK_DRIVERS}
+                        onDriverClick={handleDriverClick}
                         onBack={goBack}
                     />
                 );

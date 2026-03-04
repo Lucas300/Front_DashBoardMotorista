@@ -7,9 +7,19 @@ interface OverviewViewProps {
     drivers: Driver[];
     onViewDrivers: () => void;
     onDriverClick: (driver: Driver) => void;
+    onTripsClick: () => void;
+    onAlertsClick: () => void;
+    onIdleRankingClick: () => void;
 }
 
-const OverviewView = ({ drivers, onViewDrivers, onDriverClick }: OverviewViewProps) => {
+const OverviewView = ({ 
+    drivers, 
+    onViewDrivers, 
+    onDriverClick,
+    onTripsClick,
+    onAlertsClick,
+    onIdleRankingClick
+}: OverviewViewProps) => {
     return (
         <div className="overview-layout">
             <div className="overview-map-area">
@@ -19,7 +29,12 @@ const OverviewView = ({ drivers, onViewDrivers, onDriverClick }: OverviewViewPro
                     <span>Ver Motoristas</span>
                 </button>
             </div>
-            <StatsPanel />
+            <StatsPanel 
+                drivers={drivers}
+                onTripsClick={onTripsClick}
+                onAlertsClick={onAlertsClick}
+                onIdleRankingClick={onIdleRankingClick}
+            />
         </div>
     );
 };
