@@ -8,10 +8,10 @@ interface SidebarProps {
 
 const navItems = [
     { id: 'overview', label: 'Principal', icon: Home, view: 'overview' as ViewName },
-    { id: 'drivers_tracking', label: 'Rastreamento', icon: Radio, view: 'overview' as ViewName },
+    { id: 'tracking', label: 'Rastreamento', icon: Radio, view: 'vehicles' as ViewName },
+    { id: 'vehicles', label: 'Veículos', icon: Car, view: 'vehicles' as ViewName },
     { id: 'history', label: 'Histórico', icon: History, view: 'history' as ViewName },
-    { id: 'vehicles', label: 'Veículos', icon: Car, view: 'overview' as ViewName },
-    { id: 'drivers', label: 'Motoristas', icon: Users, view: 'drivers' as ViewName },
+    { id: 'idle_ranking', label: 'Ociosidade', icon: Car, view: 'idle_ranking' as ViewName },
 ];
 
 const Sidebar = ({ activeView, onNavigate }: SidebarProps) => {
@@ -26,8 +26,10 @@ const Sidebar = ({ activeView, onNavigate }: SidebarProps) => {
                     const Icon = item.icon;
                     const isActive =
                         (item.id === 'overview' && activeView === 'overview') ||
+                        (item.id === 'tracking' && activeView === 'vehicles') ||
+                        (item.id === 'vehicles' && activeView === 'vehicles') ||
                         (item.id === 'history' && activeView === 'history') ||
-                        (item.id === 'drivers' && (activeView === 'drivers' || activeView === 'driver_trips'));
+                        (item.id === 'idle_ranking' && activeView === 'idle_ranking');
 
                     return (
                         <button
