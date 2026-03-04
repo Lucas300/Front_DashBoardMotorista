@@ -7,6 +7,7 @@ import DriversView from '../views/DriversView';
 import DriverTripsView from '../views/DriverTripsView';
 import TripDetailView from '../views/TripDetailView';
 import HistoryView from '../views/HistoryView';
+import IdleRankingView from '../views/IdleRankingView';
 
 const Dashboard = () => {
     const [view, setView] = useState<ViewName>('overview');
@@ -126,9 +127,9 @@ const Dashboard = () => {
                 );
             case 'idle_ranking':
                 return (
-                    <DriversView
-                        drivers={[...MOCK_DRIVERS].sort((a, b) => b.idleKm - a.idleKm)}
-                        onDriverClick={handleDriverClick}
+                    <IdleRankingView
+                        drivers={MOCK_DRIVERS}
+                        trips={MOCK_TRIPS}
                         onBack={goBack}
                     />
                 );
