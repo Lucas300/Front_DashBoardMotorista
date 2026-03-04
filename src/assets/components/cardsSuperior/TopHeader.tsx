@@ -1,7 +1,11 @@
 import { Car, Clock, Route, Bell, AlertTriangle, Users } from "lucide-react";
 import { useState } from "react";
 
-export default function TopHeader() {
+interface TopHeaderProps {
+  onOciosidadesClick?: () => void;
+}
+
+export default function TopHeader({ onOciosidadesClick }: TopHeaderProps) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   // Dados de exemplo para o dropdown
@@ -59,6 +63,7 @@ export default function TopHeader() {
       {/* ====== DIREITA ====== */}
       <div className="flex items-center gap-6">
 
+       
         {/* 
             <button className="bg-slate-800 px-5 py-2 rounded-xl text-white hover:bg-slate-700 transition">
             Hoje
