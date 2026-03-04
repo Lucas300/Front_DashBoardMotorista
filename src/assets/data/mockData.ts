@@ -13,6 +13,7 @@ export const MOCK_DRIVERS: Driver[] = [
         onlineTime: '01:18:34',
         kmToday: 176,
         lastSeen: '11:35',
+        idleKm: 2.5,
     },
     {
         id: 'd2',
@@ -26,6 +27,7 @@ export const MOCK_DRIVERS: Driver[] = [
         onlineTime: '02:45:10',
         kmToday: 94,
         lastSeen: '11:30',
+        idleKm: 0,
     },
     {
         id: 'd3',
@@ -39,6 +41,7 @@ export const MOCK_DRIVERS: Driver[] = [
         onlineTime: '03:12:55',
         kmToday: 210,
         lastSeen: '11:32',
+        idleKm: 1.2,
     },
     {
         id: 'd4',
@@ -52,6 +55,7 @@ export const MOCK_DRIVERS: Driver[] = [
         onlineTime: '01:05:00',
         kmToday: 55,
         lastSeen: '09:45',
+        idleKm: 0,
     },
     {
         id: 'd5',
@@ -65,6 +69,7 @@ export const MOCK_DRIVERS: Driver[] = [
         onlineTime: '02:00:20',
         kmToday: 120,
         lastSeen: '10:45',
+        idleKm: 5.8,
     },
     {
         id: 'd6',
@@ -78,6 +83,7 @@ export const MOCK_DRIVERS: Driver[] = [
         onlineTime: '00:30:00',
         kmToday: 28,
         lastSeen: '11:10',
+        idleKm: 0,
     },
 ];
 

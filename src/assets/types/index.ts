@@ -45,6 +45,7 @@ export interface Driver {
   onlineTime: string;     // hh:mm:ss
   kmToday: number;
   lastSeen: string;
+  idleKm: number;
 }
 
 export interface ViewState {

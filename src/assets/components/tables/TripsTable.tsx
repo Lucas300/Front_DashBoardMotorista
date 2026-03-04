@@ -1,11 +1,13 @@
 import type { Trip } from '../../types';
-import { ArrowLeft, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, CheckCircle, XCircle, Search } from 'lucide-react';
 
 interface TripsTableProps {
     trips: Trip[];
     driverName: string;
     onTripClick: (trip: Trip) => void;
     onBack: () => void;
+    searchQuery?: string;
+    onSearchChange?: (query: string) => void;
 }
 
 const alertTypeLabel: Record<string, string> = {
@@ -16,7 +18,7 @@ const alertTypeLabel: Record<string, string> = {
     geofence: 'Cerca',
 };
 
-const TripsTable = ({ trips, driverName, onTripClick, onBack }: TripsTableProps) => {
+const TripsTable = ({ trips, driverName, onTripClick, onBack, searchQuery = '', onSearchChange }: TripsTableProps) => {
     return (
         <div className="table-container">
             <div className="table-toolbar">
@@ -27,6 +29,18 @@ const TripsTable = ({ trips, driverName, onTripClick, onBack }: TripsTableProps)
                     </button>
                     <h2 className="table-title">Corridas — {driverName}</h2>
                 </div>
+                {onSearchChange && (
+                    <div className="search-bar">
+                        <Search size={16} className="search-icon" />
+                        <input
+                            type="text"
+                            className="search-input"
+                            placeholder="Buscar em todas as colunas..."
+                            value={searchQuery}
+                            onChange={(e) => onSearchChange(e.target.value)}
+                        />
+                    </div>
+                )}
             </div>
 
             <div className="data-table-wrapper">
