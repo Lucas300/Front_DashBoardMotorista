@@ -28,6 +28,7 @@ export interface Trip {
   endTime: string;
   status: TripStatus;
   route: RoutePoint[];
+  plannedRoute?: RoutePoint[];
   origin: RoutePoint;
   destination: RoutePoint;
 }

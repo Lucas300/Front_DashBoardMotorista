@@ -54,7 +54,30 @@ const TripMap = ({ trip }: TripMapProps) => {
     }, []);
 
     const center = trip.route[Math.floor(trip.route.length / 2)];
-    const routeColor = trip.delayed ? '#ef4444' : trip.exceededKm ? '#f59e0b' : '#06b6d4';
+    const hasPlannedRoute = !!trip.plannedRoute;
+    const isOngoing = trip.status === 'em_andamento';
+    const isCompleted = trip.status === 'concluida';
+
+    // Get the marker position based on trip status
+    const getMarkerPosition = () => {
+        if (isOngoing && trip.route.length > 0) {
+            return trip.route[trip.route.length - 1];
+        }
+        if (isCompleted) {
+            return trip.destination;
+        }
+        return null;
+    };
+
+    const markerPosition = getMarkerPosition();
+
+    // Create a custom icon for current position marker
+    const currentPositionIcon = L.divIcon({
+        html: `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12" fill="#ef4444" stroke="white" stroke-width="2"/><text x="16" y="20" text-anchor="middle" fill="white" font-size="10" font-weight="bold" font-family="sans-serif">●</text></svg>`,
+        className: '',
+        iconSize: [32, 32],
+        iconAnchor: [16, 16],
+    });
 
     return (
         <div className="fleet-map-wrapper">
@@ -68,10 +91,21 @@ const TripMap = ({ trip }: TripMapProps) => {
                     url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                     attribution='&copy; OpenStreetMap contributors &copy; CARTO'
                 />
-                {/* Route line */}
+                {/* Planned route - always green (#10b981) */}
+                {hasPlannedRoute && (
+                    <Polyline
+                        positions={trip.plannedRoute!.map((p) => [p.lat, p.lng])}
+                        pathOptions={{ color: '#10b981', weight: 5, opacity: 0.9 }}
+                    />
+                )}
+                {/* Real route - red (#ef4444) when plannedRoute exists, otherwise green (#10b981) */}
                 <Polyline
                     positions={trip.route.map((p) => [p.lat, p.lng])}
-                    pathOptions={{ color: routeColor, weight: 5, opacity: 0.9, dashArray: trip.delayed ? '8 4' : undefined }}
+                    pathOptions={{ 
+                        color: hasPlannedRoute ? '#ef4444' : '#10b981', 
+                        weight: 5, 
+                        opacity: 0.9 
+                    }}
                 />
                 {/* Origin marker */}
                 <Marker position={[trip.origin.lat, trip.origin.lng]} icon={startIcon}>
@@ -81,6 +115,14 @@ const TripMap = ({ trip }: TripMapProps) => {
                 <Marker position={[trip.destination.lat, trip.destination.lng]} icon={endIcon}>
                     <Popup>Destino da viagem</Popup>
                 </Marker>
+                {/* Current position marker for ongoing or completed trips */}
+                {markerPosition && (
+                    <Marker position={[markerPosition.lat, markerPosition.lng]} icon={currentPositionIcon}>
+                        <Popup>
+                            {isOngoing ? 'Posição atual (em andamento)' : 'Posição final (concluída)'}
+                        </Popup>
+                    </Marker>
+                )}
                 {/* Alert markers */}
                 {trip.alerts.map((alert) => (
                     <Marker
@@ -121,10 +163,23 @@ const TripMap = ({ trip }: TripMapProps) => {
                         <span>{trip.alerts.length} Alerta(s)</span>
                     </div>
                 )}
-                <div className="legend-item">
-                    <span className="legend-line" style={{ background: routeColor }} />
-                    <span>Rota {trip.delayed ? '(Atrasada)' : trip.exceededKm ? '(KM Excedido)' : 'Normal'}</span>
-                </div>
+                {hasPlannedRoute ? (
+                    <>
+                        <div className="legend-item">
+                            <span className="legend-line" style={{ background: '#10b981' }} />
+                            <span>Rota Planejada</span>
+                        </div>
+                        <div className="legend-item">
+                            <span className="legend-line" style={{ background: '#ef4444' }} />
+                            <span>Rota Real</span>
+                        </div>
+                    </>
+                ) : (
+                    <div className="legend-item">
+                        <span className="legend-line" style={{ background: '#10b981' }} />
+                        <span>Rota</span>
+                    </div>
+                )}
             </div>
         </div>
     );
