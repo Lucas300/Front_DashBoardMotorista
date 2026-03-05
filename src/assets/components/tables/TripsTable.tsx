@@ -1,5 +1,6 @@
 import type { Trip } from '../../types';
 import { ArrowLeft, AlertTriangle, CheckCircle, XCircle, Search } from 'lucide-react';
+import { formatDateBR, formatTimeBR } from '../../utils/dateUtils';
 
 interface TripsTableProps {
     trips: Trip[];
@@ -60,7 +61,7 @@ const TripsTable = ({ trips, driverName, onTripClick, onBack, searchQuery = '', 
                     <tbody>
                         {trips.map((trip) => (
                             <tr key={trip.id} className="table-row" onClick={() => onTripClick(trip)}>
-                                <td className="cell-muted">{trip.date}</td>
+                                <td className="cell-muted">{formatDateBR(trip.date)}</td>
                                 <td>
                                     <span className="cell-highlight">{trip.distance} km</span>
                                 </td>
@@ -104,8 +105,8 @@ const TripsTable = ({ trips, driverName, onTripClick, onBack, searchQuery = '', 
                                         </div>
                                     )}
                                 </td>
-                                <td className="cell-muted">{trip.startTime}</td>
-                                <td className="cell-muted">{trip.endTime}</td>
+                                <td className="cell-muted">{formatTimeBR(trip.startTime)}</td>
+                                <td className="cell-muted">{formatTimeBR(trip.endTime)}</td>
                             </tr>
                         ))}
                         {trips.length === 0 && (

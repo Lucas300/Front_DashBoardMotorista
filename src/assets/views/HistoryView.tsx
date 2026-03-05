@@ -1,12 +1,12 @@
 import { useState, useMemo } from 'react';
 import type { Driver, Trip, TripStatus } from '../types';
-import { ArrowLeft, Search, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+import { Search, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+import { formatDateBR, formatTimeBR } from '../utils/dateUtils';
 
 interface HistoryViewProps {
     trips: Trip[];
     drivers: Driver[];
     onTripClick: (trip: Trip, driver: Driver) => void;
-    onBack: () => void;
     alertsFilter?: boolean;
 }
 
@@ -24,16 +24,11 @@ const alertTypeLabel: Record<string, string> = {
     geofence: 'Cerca',
 };
 
-const HistoryView = ({ trips, drivers, onTripClick, onBack, alertsFilter }: HistoryViewProps) => {
+const HistoryView = ({ trips, drivers, onTripClick, alertsFilter }: HistoryViewProps) => {
     const [searchQuery, setSearchQuery] = useState('');
 
     const getDriverById = (driverId: string): Driver | undefined => {
         return drivers.find(d => d.id === driverId);
-    };
-
-    const getDriverName = (driverId: string): string => {
-        const driver = getDriverById(driverId);
-        return driver?.name ?? 'Unknown';
     };
 
     const filteredTrips = useMemo(() => {
@@ -61,12 +56,12 @@ const HistoryView = ({ trips, drivers, onTripClick, onBack, alertsFilter }: Hist
             const matchesDriver = driverName.includes(query);
             const matchesVehicle = vehicle.includes(query);
             const matchesLicensePlate = licensePlate.includes(query);
-            const matchesDate = trip.date.toLowerCase().includes(query);
+            const matchesDate = formatDateBR(trip.date).includes(query);
             const matchesStatus = statusLabels[trip.status].toLowerCase().includes(query);
             const matchesDistance = trip.distance.toString().includes(query);
             const matchesPlannedKm = trip.plannedKm.toString().includes(query);
-            const matchesStartTime = trip.startTime.toLowerCase().includes(query);
-            const matchesEndTime = trip.endTime.toLowerCase().includes(query);
+            const matchesStartTime = formatTimeBR(trip.startTime).includes(query);
+            const matchesEndTime = formatTimeBR(trip.endTime).includes(query);
             const matchesDelayed = trip.delayed ? 'atraso'.includes(query) || 'sim'.includes(query) : 'não'.includes(query) || 'nao'.includes(query);
             const matchesExceededKm = trip.exceededKm ? 'excedeu'.includes(query) || 'sim'.includes(query) : 'não'.includes(query) || 'nao'.includes(query);
 
@@ -92,12 +87,13 @@ const HistoryView = ({ trips, drivers, onTripClick, onBack, alertsFilter }: Hist
 
     return (
         <div className="view-full">
-            <div className="view-top-bar">
+            {/* <div className="view-top-bar">
                 <button className="back-btn" onClick={onBack}>
-                    <ArrowLeft size={16} />
-                    <span>Voltar</span>
-                </button>
+                        <ArrowLeft size={16} />
+                        <span>Voltar aaaaaaa</span>
+                    </button>
             </div>
+            */}
 
             <div className="table-container">
                 <div className="table-toolbar">
@@ -168,15 +164,15 @@ const HistoryView = ({ trips, drivers, onTripClick, onBack, alertsFilter }: Hist
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="cell-muted">{trip.date}</td>
+                                        <td className="cell-muted">{formatDateBR(trip.date)}</td>
                                         <td>
                                             <span className="cell-highlight">{trip.distance} km</span>
                                         </td>
                                         <td className="cell-muted">{trip.plannedKm} km</td>
                                         <td>
                                             <span className={`status-badge ${trip.status === 'em_andamento' ? 'badge--paused' :
-                                                    trip.status === 'concluida' ? 'badge--online' :
-                                                        'badge--offline'
+                                                trip.status === 'concluida' ? 'badge--online' :
+                                                    'badge--offline'
                                                 }`}>
                                                 {statusLabels[trip.status]}
                                             </span>
@@ -220,8 +216,8 @@ const HistoryView = ({ trips, drivers, onTripClick, onBack, alertsFilter }: Hist
                                                 </div>
                                             )}
                                         </td>
-                                        <td className="cell-muted">{trip.startTime}</td>
-                                        <td className="cell-muted">{trip.endTime}</td>
+                                        <td className="cell-muted">{formatTimeBR(trip.startTime)}</td>
+                                        <td className="cell-muted">{formatTimeBR(trip.endTime)}</td>
                                     </tr>
                                 );
                             })}

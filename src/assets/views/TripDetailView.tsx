@@ -1,6 +1,8 @@
 import type { Trip, Driver } from '../types';
 import TripMap from '../components/map/TripMap';
-import { ArrowLeft, AlertTriangle, CheckCircle, XCircle, MapPin, Clock, Navigation } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, CheckCircle, XCircle, MapPin, Clock, Navigation, Zap } from 'lucide-react';
+import { formatTimeBR } from '../utils/dateUtils';
+import { calculateTripIdleKm } from '../utils/tripUtils';
 
 interface TripDetailViewProps {
     trip: Trip;
@@ -51,12 +53,17 @@ const TripDetailView = ({ trip, driver, onBack }: TripDetailViewProps) => {
                         <div className="trip-stat">
                             <Clock size={14} className="text-purple-400" />
                             <span className="trip-stat-label">Início</span>
-                            <span className="trip-stat-value">{trip.startTime}</span>
+                            <span className="trip-stat-value">{formatTimeBR(trip.startTime)}</span>
                         </div>
                         <div className="trip-stat">
                             <Clock size={14} className="text-purple-400" />
                             <span className="trip-stat-label">Final</span>
-                            <span className="trip-stat-value">{trip.endTime}</span>
+                            <span className="trip-stat-value">{formatTimeBR(trip.endTime)}</span>
+                        </div>
+                        <div className="trip-stat">
+                            <Zap size={14} className="text-amber-400" />
+                            <span className="trip-stat-label">KM Ocioso</span>
+                            <span className="trip-stat-value">{calculateIdleKm(trip.distance, trip.plannedKm).toFixed(1)} km</span>
                         </div>
                     </div>
 
@@ -83,7 +90,7 @@ const TripDetailView = ({ trip, driver, onBack }: TripDetailViewProps) => {
                                         <span className="alert-bullet" />
                                         <div>
                                             <span className="alert-desc">{alert.description}</span>
-                                            <span className="alert-time">{alert.timestamp}</span>
+                                            <span className="alert-time">{formatTimeBR(alert.timestamp)}</span>
                                         </div>
                                     </li>
                                 ))}

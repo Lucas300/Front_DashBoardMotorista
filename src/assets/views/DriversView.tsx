@@ -1,6 +1,6 @@
 import type { Driver } from '../types';
 import DriversTable from '../components/tables/DriversTable';
-import { ArrowLeft } from 'lucide-react';
+
 
 interface DriversViewProps {
     drivers: Driver[];
@@ -8,15 +8,15 @@ interface DriversViewProps {
     onBack: () => void;
 }
 
-const DriversView = ({ drivers, onDriverClick, onBack }: DriversViewProps) => {
+const DriversView = ({ drivers, onDriverClick }: DriversViewProps) => {
     return (
         <div className="view-full">
-            <div className="view-top-bar">
+            {/* <div className="view-top-bar">
                 <button className="back-btn" onClick={onBack}>
                     <ArrowLeft size={16} />
                     <span>Voltar ao Mapa</span>
                 </button>
-            </div>
+            </div> */}
             <DriversTable drivers={drivers} onDriverClick={onDriverClick} />
         </div>
     );

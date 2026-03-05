@@ -1,6 +1,7 @@
-import { MapPin, AlertTriangle, Clock } from 'lucide-react';
+import { MapPin, AlertTriangle, Zap } from 'lucide-react';
 import type { Driver } from '../../types';
 import { MOCK_TRIPS } from '../../data/mockData';
+import { calculateGlobalIdleKm } from '../../utils/tripUtils';
 
 interface StatsPanelProps {
     drivers: Driver[];
@@ -11,35 +12,33 @@ interface StatsPanelProps {
 
 // Calculate general metrics (not driver-specific)
 const calculateMetrics = (drivers: Driver[], trips: typeof MOCK_TRIPS) => {
-    // Total trips today
-    const totalTripsToday = drivers.reduce((sum, driver) => sum + driver.tripsToday, 0);
-    
-    // Total alerts (from all trips today)
-    const today = new Date().toISOString().split('T')[0];
-    const todayTrips = trips.filter(t => t.date === today);
-    const totalAlerts = todayTrips.reduce((sum, trip) => sum + trip.alerts.length, 0);
-    
-    // Total idle KM
-    const totalIdleKm = drivers.reduce((sum, driver) => sum + driver.idleKm, 0);
-    
-    return { totalTripsToday, totalAlerts, totalIdleKm };
+    // Total trips (all recorded trips)
+    const totalTrips = trips.length;
+
+    // Total alerts (from all trips)
+    const totalAlerts = trips.reduce((sum, trip) => sum + trip.alerts.length, 0);
+
+    // Total idle KM (calculated from all trips)
+    const totalIdleKm = calculateGlobalIdleKm(trips);
+
+    return { totalTrips, totalAlerts, totalIdleKm };
 };
 
 const StatsPanel = ({ drivers, onTripsClick, onAlertsClick, onIdleRankingClick }: StatsPanelProps) => {
-    const { totalTripsToday, totalAlerts, totalIdleKm } = calculateMetrics(drivers, MOCK_TRIPS);
+    const { totalTrips, totalAlerts, totalIdleKm } = calculateMetrics(drivers, MOCK_TRIPS);
 
     return (
         <div className="stats-panel">
-            {/* Total Trips Today */}
+            {/* Total Trips */}
             <div className="stats-card stats-card--clickable" onClick={onTripsClick}>
                 <div className="stats-card-header">
-                    <span className="stats-card-title">Total de Viagens Hoje</span>
+                    <span className="stats-card-title">Total de Viagens</span>
                     <div className="stats-card-icon stats-card-icon--blue">
                         <MapPin size={16} />
                     </div>
                 </div>
                 <div className="stats-card-value">
-                    <span className="big-number">{totalTripsToday}</span>
+                    <span className="big-number">{totalTrips}</span>
                 </div>
                 <div className="stats-card-footer">
                     <span className="stats-card-link">Ver histórico</span>
@@ -65,9 +64,9 @@ const StatsPanel = ({ drivers, onTripsClick, onAlertsClick, onIdleRankingClick }
             {/* Total Idle KM */}
             <div className="stats-card stats-card--clickable" onClick={onIdleRankingClick}>
                 <div className="stats-card-header">
-                    <span className="stats-card-title">KM em Marcha Lenta</span>
+                    <span className="stats-card-title">KM Ocioso</span>
                     <div className="stats-card-icon stats-card-icon--amber">
-                        <Clock size={16} />
+                        <Zap size={16} />
                     </div>
                 </div>
                 <div className="stats-card-value">

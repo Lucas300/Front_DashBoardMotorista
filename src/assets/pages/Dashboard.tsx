@@ -122,7 +122,6 @@ const Dashboard = () => {
                         trips={MOCK_TRIPS}
                         drivers={MOCK_DRIVERS}
                         onTripClick={handleHistoryTripClick}
-                        onBack={goBack}
                         alertsFilter={alertsFilter}
                     />
                 );

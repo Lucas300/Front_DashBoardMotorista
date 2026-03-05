@@ -1,4 +1,4 @@
-import { Home, Radio, History, Car, Users } from 'lucide-react';
+import { Home, History, Car } from 'lucide-react';
 import type { ViewName } from '../../types';
 
 interface SidebarProps {

@@ -1,5 +1,7 @@
-import { ArrowLeft, Trophy, Medal } from 'lucide-react';
+import { Trophy, Medal } from 'lucide-react';
 import type { Driver, Trip } from '../types';
+import { calculateTripIdleKm } from '../utils/tripUtils';
+import { useMemo } from 'react';
 
 interface IdleRankingViewProps {
     drivers: Driver[];
@@ -13,23 +15,31 @@ interface DriverRanking {
     rank: number;
     totalTrips: number;
     totalAlerts: number;
+    totalIdleKm: number;
 }
 
-const IdleRankingView = ({ drivers, trips, onBack, onDriverClick }: IdleRankingViewProps) => {
-    // Sort drivers by idleKm descending and create ranking data
-    const sortedDrivers = [...drivers].sort((a, b) => b.idleKm - a.idleKm);
+const IdleRankingView = ({ drivers, trips, onDriverClick }: IdleRankingViewProps) => {
+    // Calculate ranking data with dynamic idle KM
+    const rankingData: DriverRanking[] = useMemo(() => {
+        const data = drivers.map(driver => {
+            const driverTrips = trips.filter(t => t.driverId === driver.id);
+            const totalAlerts = driverTrips.reduce((sum, trip) => sum + trip.alerts.length, 0);
+            const totalIdleKm = driverTrips.reduce((sum, trip) => sum + calculateTripIdleKm(trip), 0);
 
-    const rankingData: DriverRanking[] = sortedDrivers.map((driver, index) => {
-        const driverTrips = trips.filter(t => t.driverId === driver.id);
-        const totalAlerts = driverTrips.reduce((sum, trip) => sum + trip.alerts.length, 0);
+            return {
+                driver,
+                totalTrips: driverTrips.length,
+                totalAlerts,
+                totalIdleKm,
+                rank: 0, // Placeholder
+            };
+        });
 
-        return {
-            driver,
-            rank: index + 1,
-            totalTrips: driverTrips.length,
-            totalAlerts,
-        };
-    });
+        // Sort by totalIdleKm descending
+        return data
+            .sort((a, b) => b.totalIdleKm - a.totalIdleKm)
+            .map((item, index) => ({ ...item, rank: index + 1 }));
+    }, [drivers, trips]);
 
     const getRankBadge = (rank: number) => {
         if (rank === 1) {
@@ -62,10 +72,7 @@ const IdleRankingView = ({ drivers, trips, onBack, onDriverClick }: IdleRankingV
     return (
         <div className="view-full">
             <div className="view-top-bar">
-                <button className="back-btn" onClick={onBack}>
-                    <ArrowLeft size={16} />
-                    <span>Voltar</span>
-                </button>
+                {/* Back button removed by user request in previous steps or kept commented */}
             </div>
             <div className="table-container">
                 <div className="table-toolbar">
@@ -86,7 +93,7 @@ const IdleRankingView = ({ drivers, trips, onBack, onDriverClick }: IdleRankingV
                             </tr>
                         </thead>
                         <tbody>
-                            {rankingData.map(({ driver, rank, totalTrips, totalAlerts }) => (
+                            {rankingData.map(({ driver, rank, totalTrips, totalAlerts, totalIdleKm }) => (
                                 <tr
                                     key={driver.id}
                                     className="table-row"
@@ -113,7 +120,7 @@ const IdleRankingView = ({ drivers, trips, onBack, onDriverClick }: IdleRankingV
                                     </td>
                                     <td>
                                         <div className="cell-highlight idle-km">
-                                            {driver.idleKm.toFixed(1)} km
+                                            {totalIdleKm.toFixed(1)} km
                                         </div>
                                     </td>
                                     <td>

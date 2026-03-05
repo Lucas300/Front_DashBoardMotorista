@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline, Circle } from 'react-
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { Trip, Alert } from '../../types';
+import { formatTimeBR } from '../../utils/dateUtils';
 
 delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -101,10 +102,10 @@ const TripMap = ({ trip }: TripMapProps) => {
                 {/* Real route - red (#ef4444) when plannedRoute exists, otherwise green (#10b981) */}
                 <Polyline
                     positions={trip.route.map((p) => [p.lat, p.lng])}
-                    pathOptions={{ 
-                        color: hasPlannedRoute ? '#ef4444' : '#10b981', 
-                        weight: 5, 
-                        opacity: 0.9 
+                    pathOptions={{
+                        color: hasPlannedRoute ? '#ef4444' : '#10b981',
+                        weight: 5,
+                        opacity: 0.9
                     }}
                 />
                 {/* Origin marker */}
@@ -134,7 +135,7 @@ const TripMap = ({ trip }: TripMapProps) => {
                             <div>
                                 <strong>⚠ {alert.description}</strong>
                                 <br />
-                                <small>{alert.timestamp}</small>
+                                <small>{formatTimeBR(alert.timestamp)}</small>
                             </div>
                         </Popup>
                     </Marker>

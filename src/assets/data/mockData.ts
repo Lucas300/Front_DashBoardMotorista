@@ -59,8 +59,8 @@ export const MOCK_DRIVERS: Driver[] = [
     },
     {
         id: 'd5',
-        name: 'Iveco Crossway',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Vanda',
+        name: 'Lucas Daniel',
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Maria',
         vehicle: '17-230 OD / 18-330 OT',
         licensePlate: '2026-3',
         status: 'pausado',

@@ -1,7 +1,9 @@
 import { useState, useMemo } from 'react';
 import type { Driver, Trip } from '../types';
 import TripsTable from '../components/tables/TripsTable';
-import { Route, AlertTriangle, Clock } from 'lucide-react';
+import { Route, AlertTriangle, Zap } from 'lucide-react';
+import { formatDateBR } from '../utils/dateUtils';
+import { calculateDriverIdleKm } from '../utils/tripUtils';
 
 interface DriverTripsViewProps {
     driver: Driver;
@@ -13,10 +15,13 @@ interface DriverTripsViewProps {
 const DriverTripsView = ({ driver, trips, onTripClick, onBack }: DriverTripsViewProps) => {
     const [searchQuery, setSearchQuery] = useState('');
 
+    const totalIdleKm = useMemo(() => {
+        return calculateDriverIdleKm(driver.id, trips);
+    }, [driver.id, trips]);
+
     // Calculate summary statistics
     const totalTrips = trips.length;
     const totalAlerts = trips.reduce((sum, trip) => sum + trip.alerts.length, 0);
-    const isIdle = driver.idleKm > 0;
 
     // Filter trips based on search query
     const filteredTrips = useMemo(() => {
@@ -28,7 +33,7 @@ const DriverTripsView = ({ driver, trips, onTripClick, onBack }: DriverTripsView
 
         return trips.filter((trip) => {
             // Search across all visible columns
-            const dateMatch = trip.date.toLowerCase().includes(query);
+            const dateMatch = formatDateBR(trip.date).includes(query);
             const distanceMatch = trip.distance.toString().includes(query);
             const plannedKmMatch = trip.plannedKm.toString().includes(query);
             const alertsMatch = trip.alerts.length > 0 && trip.alerts.some(
@@ -68,12 +73,12 @@ const DriverTripsView = ({ driver, trips, onTripClick, onBack }: DriverTripsView
                     </div>
                 </div>
                 <div className="summary-card">
-                    <div className={`summary-card-icon ${isIdle ? 'summary-card-icon--red' : 'summary-card-icon--green'}`}>
-                        <Clock size={20} />
+                    <div className="summary-card-icon summary-card-icon--amber">
+                        <Zap size={20} />
                     </div>
                     <div className="summary-card-content">
-                        <span className="summary-card-label">Idle KM</span>
-                        <span className="summary-card-value">{driver.idleKm} km</span>
+                        <span className="summary-card-label">KM Ocioso</span>
+                        <span className="summary-card-value">{totalIdleKm.toFixed(1)} km</span>
                     </div>
                 </div>
             </div>
