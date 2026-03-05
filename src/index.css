@@ -1243,3 +1243,20 @@ body {
   color: var(--red);
   font-weight: 600;
 }
+
+/* ─── Leaflet Popup Dark UI Overrides ─────────────────────────── */
+.leaflet-popup-content-wrapper {
+  background-color: var(--bg-card) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+}
+
+.leaflet-popup-content {
+  color: var(--text) !important;
+  margin: 12px !important;
+}
+
+.leaflet-popup-tip {
+  background-color: var(--bg-card) !important;
+}

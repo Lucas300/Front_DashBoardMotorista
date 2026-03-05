@@ -27,7 +27,7 @@ const DriversTable = ({ drivers, onDriverClick }: DriversTableProps) => {
     return (
         <div className="table-container">
             <div className="table-toolbar">
-                <h2 className="table-title">Histórico</h2>
+                <h2 className="table-title">Motoristas</h2>
                 <div className="table-toolbar-right">
                     <div className="status-filter">
                         <select

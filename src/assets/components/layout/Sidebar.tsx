@@ -8,8 +8,7 @@ interface SidebarProps {
 
 const navItems = [
     { id: 'overview', label: 'Principal', icon: Home, view: 'overview' as ViewName },
-    { id: 'tracking', label: 'Rastreamento', icon: Radio, view: 'vehicles' as ViewName },
-    { id: 'vehicles', label: 'Veículos', icon: Car, view: 'vehicles' as ViewName },
+    { id: 'vehicles', label: 'Motoristas', icon: Car, view: 'vehicles' as ViewName },
     { id: 'history', label: 'Histórico', icon: History, view: 'history' as ViewName },
     { id: 'idle_ranking', label: 'Ociosidade', icon: Car, view: 'idle_ranking' as ViewName },
 ];

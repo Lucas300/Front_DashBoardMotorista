@@ -5,6 +5,7 @@ interface IdleRankingViewProps {
     drivers: Driver[];
     trips: Trip[];
     onBack: () => void;
+    onDriverClick?: (driver: Driver) => void;
 }
 
 interface DriverRanking {
@@ -14,14 +15,14 @@ interface DriverRanking {
     totalAlerts: number;
 }
 
-const IdleRankingView = ({ drivers, trips, onBack }: IdleRankingViewProps) => {
+const IdleRankingView = ({ drivers, trips, onBack, onDriverClick }: IdleRankingViewProps) => {
     // Sort drivers by idleKm descending and create ranking data
     const sortedDrivers = [...drivers].sort((a, b) => b.idleKm - a.idleKm);
-    
+
     const rankingData: DriverRanking[] = sortedDrivers.map((driver, index) => {
         const driverTrips = trips.filter(t => t.driverId === driver.id);
         const totalAlerts = driverTrips.reduce((sum, trip) => sum + trip.alerts.length, 0);
-        
+
         return {
             driver,
             rank: index + 1,
@@ -72,7 +73,7 @@ const IdleRankingView = ({ drivers, trips, onBack }: IdleRankingViewProps) => {
                         <h1 className="table-title">Ranking de Motoristas Ociosos</h1>
                     </div>
                 </div>
-                
+
                 <div className="data-table-wrapper">
                     <table className="data-table">
                         <thead>
@@ -86,14 +87,19 @@ const IdleRankingView = ({ drivers, trips, onBack }: IdleRankingViewProps) => {
                         </thead>
                         <tbody>
                             {rankingData.map(({ driver, rank, totalTrips, totalAlerts }) => (
-                                <tr key={driver.id} className="table-row">
+                                <tr
+                                    key={driver.id}
+                                    className="table-row"
+                                    onClick={() => onDriverClick?.(driver)}
+                                    style={{ cursor: 'pointer' }}
+                                >
                                     <td>
                                         {getRankBadge(rank)}
                                     </td>
                                     <td>
                                         <div className="driver-cell">
-                                            <img 
-                                                src={driver.avatar} 
+                                            <img
+                                                src={driver.avatar}
                                                 alt={driver.name}
                                                 className="driver-avatar-small"
                                             />

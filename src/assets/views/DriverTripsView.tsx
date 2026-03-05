@@ -41,7 +41,7 @@ const DriverTripsView = ({ driver, trips, onTripClick, onBack }: DriverTripsView
             const statusMatch = trip.status.toLowerCase().includes(query);
 
             return dateMatch || distanceMatch || plannedKmMatch || alertsMatch || delayedMatch ||
-                   exceededKmMatch || startTimeMatch || endTimeMatch || statusMatch;
+                exceededKmMatch || startTimeMatch || endTimeMatch || statusMatch;
         });
     }, [trips, searchQuery]);
 
@@ -72,8 +72,8 @@ const DriverTripsView = ({ driver, trips, onTripClick, onBack }: DriverTripsView
                         <Clock size={20} />
                     </div>
                     <div className="summary-card-content">
-                        <span className="summary-card-label">Status de Idle</span>
-                        <span className="summary-card-value">{isIdle ? `${driver.idleKm} km` : 'Normal'}</span>
+                        <span className="summary-card-label">Idle KM</span>
+                        <span className="summary-card-value">{driver.idleKm} km</span>
                     </div>
                 </div>
             </div>

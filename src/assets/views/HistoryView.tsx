@@ -7,6 +7,7 @@ interface HistoryViewProps {
     drivers: Driver[];
     onTripClick: (trip: Trip, driver: Driver) => void;
     onBack: () => void;
+    alertsFilter?: boolean;
 }
 
 const statusLabels: Record<TripStatus, string> = {
@@ -23,7 +24,7 @@ const alertTypeLabel: Record<string, string> = {
     geofence: 'Cerca',
 };
 
-const HistoryView = ({ trips, drivers, onTripClick, onBack }: HistoryViewProps) => {
+const HistoryView = ({ trips, drivers, onTripClick, onBack, alertsFilter }: HistoryViewProps) => {
     const [searchQuery, setSearchQuery] = useState('');
 
     const getDriverById = (driverId: string): Driver | undefined => {
@@ -36,18 +37,26 @@ const HistoryView = ({ trips, drivers, onTripClick, onBack }: HistoryViewProps) 
     };
 
     const filteredTrips = useMemo(() => {
+        let result = trips;
+
+        // Apply alerts filter first if activated
+        if (alertsFilter) {
+            result = result.filter(trip => trip.alerts.length > 0)
+                .sort((a, b) => b.alerts.length - a.alerts.length);
+        }
+
         if (!searchQuery.trim()) {
-            return trips;
+            return result;
         }
 
         const query = searchQuery.toLowerCase();
 
-        return trips.filter(trip => {
+        return result.filter(trip => {
             const driver = getDriverById(trip.driverId);
             const driverName = driver?.name.toLowerCase() ?? '';
             const vehicle = driver?.vehicle.toLowerCase() ?? '';
             const licensePlate = driver?.licensePlate.toLowerCase() ?? '';
-            
+
             // Search across all visible fields
             const matchesDriver = driverName.includes(query);
             const matchesVehicle = vehicle.includes(query);
@@ -60,19 +69,19 @@ const HistoryView = ({ trips, drivers, onTripClick, onBack }: HistoryViewProps) 
             const matchesEndTime = trip.endTime.toLowerCase().includes(query);
             const matchesDelayed = trip.delayed ? 'atraso'.includes(query) || 'sim'.includes(query) : 'não'.includes(query) || 'nao'.includes(query);
             const matchesExceededKm = trip.exceededKm ? 'excedeu'.includes(query) || 'sim'.includes(query) : 'não'.includes(query) || 'nao'.includes(query);
-            
+
             // Search in alerts
-            const matchesAlerts = trip.alerts.some(alert => 
+            const matchesAlerts = trip.alerts.some(alert =>
                 alert.type.toLowerCase().includes(query) ||
                 alertTypeLabel[alert.type]?.toLowerCase().includes(query) ||
                 alert.description.toLowerCase().includes(query)
             );
 
-            return matchesDriver || matchesVehicle || matchesLicensePlate || matchesDate || 
-                   matchesStatus || matchesDistance || matchesPlannedKm || matchesStartTime || 
-                   matchesEndTime || matchesDelayed || matchesExceededKm || matchesAlerts;
+            return matchesDriver || matchesVehicle || matchesLicensePlate || matchesDate ||
+                matchesStatus || matchesDistance || matchesPlannedKm || matchesStartTime ||
+                matchesEndTime || matchesDelayed || matchesExceededKm || matchesAlerts;
         });
-    }, [trips, drivers, searchQuery]);
+    }, [trips, drivers, searchQuery, alertsFilter]);
 
     const handleTripClick = (trip: Trip) => {
         const driver = getDriverById(trip.driverId);
@@ -89,16 +98,16 @@ const HistoryView = ({ trips, drivers, onTripClick, onBack }: HistoryViewProps) 
                     <span>Voltar</span>
                 </button>
             </div>
-            
+
             <div className="table-container">
                 <div className="table-toolbar">
                     <div className="table-toolbar-left">
-                        <h2 className="table-title">Histórico de Viagens</h2>
+                        <h2 className="table-title">{alertsFilter ? 'Viagens com Alertas' : 'Histórico de Viagens'}</h2>
                         <span className="cell-muted" style={{ fontSize: '13px', marginLeft: '8px' }}>
                             ({filteredTrips.length} {filteredTrips.length === 1 ? 'viagem' : 'viagens'})
                         </span>
                     </div>
-                    
+
                     <div className="table-toolbar-right">
                         <div className="search-bar">
                             <Search size={16} className="search-icon" />
@@ -134,22 +143,22 @@ const HistoryView = ({ trips, drivers, onTripClick, onBack }: HistoryViewProps) 
                             {filteredTrips.map((trip) => {
                                 const driver = getDriverById(trip.driverId);
                                 return (
-                                    <tr 
-                                        key={trip.id} 
-                                        className="table-row" 
+                                    <tr
+                                        key={trip.id}
+                                        className="table-row"
                                         onClick={() => handleTripClick(trip)}
                                     >
                                         <td>
                                             <div className="driver-cell">
-                                                <div 
-                                                    className="driver-dot" 
-                                                    style={{ 
-                                                        background: driver?.status === 'online' || driver?.status === 'em_rota' 
-                                                            ? 'var(--green)' 
+                                                <div
+                                                    className="driver-dot"
+                                                    style={{
+                                                        background: driver?.status === 'online' || driver?.status === 'em_rota'
+                                                            ? 'var(--green)'
                                                             : driver?.status === 'pausado'
-                                                            ? 'var(--yellow)'
-                                                            : 'var(--red)'
-                                                    }} 
+                                                                ? 'var(--yellow)'
+                                                                : 'var(--red)'
+                                                    }}
                                                 />
                                                 <div>
                                                     <div className="driver-name">{driver?.name ?? 'Unknown'}</div>
@@ -165,11 +174,10 @@ const HistoryView = ({ trips, drivers, onTripClick, onBack }: HistoryViewProps) 
                                         </td>
                                         <td className="cell-muted">{trip.plannedKm} km</td>
                                         <td>
-                                            <span className={`status-badge ${
-                                                trip.status === 'em_andamento' ? 'badge--paused' :
-                                                trip.status === 'concluida' ? 'badge--online' :
-                                                'badge--offline'
-                                            }`}>
+                                            <span className={`status-badge ${trip.status === 'em_andamento' ? 'badge--paused' :
+                                                    trip.status === 'concluida' ? 'badge--online' :
+                                                        'badge--offline'
+                                                }`}>
                                                 {statusLabels[trip.status]}
                                             </span>
                                         </td>

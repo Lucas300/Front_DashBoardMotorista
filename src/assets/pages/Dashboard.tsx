@@ -67,7 +67,7 @@ const Dashboard = () => {
 
     const handleAlertsClick = useCallback(() => {
         setAlertsFilter(true);
-        navigate('vehicles');
+        navigate('history');
     }, [navigate]);
 
     const handleIdleRankingClick = useCallback(() => {
@@ -123,6 +123,7 @@ const Dashboard = () => {
                         drivers={MOCK_DRIVERS}
                         onTripClick={handleHistoryTripClick}
                         onBack={goBack}
+                        alertsFilter={alertsFilter}
                     />
                 );
             case 'idle_ranking':
@@ -131,12 +132,13 @@ const Dashboard = () => {
                         drivers={MOCK_DRIVERS}
                         trips={MOCK_TRIPS}
                         onBack={goBack}
+                        onDriverClick={handleDriverClick}
                     />
                 );
             case 'vehicles':
                 return (
                     <DriversView
-                        drivers={alertsFilter 
+                        drivers={alertsFilter
                             ? MOCK_DRIVERS.filter(d => d.status === 'em_rota')
                             : MOCK_DRIVERS}
                         onDriverClick={handleDriverClick}
