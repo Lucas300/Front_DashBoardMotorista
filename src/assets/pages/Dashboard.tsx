@@ -96,7 +96,6 @@ const Dashboard = () => {
                     <DriversView
                         drivers={MOCK_DRIVERS}
                         onDriverClick={handleDriverClick}
-                        onBack={goBack}
                     />
                 );
             case 'driver_trips':
@@ -141,7 +140,6 @@ const Dashboard = () => {
                             ? MOCK_DRIVERS.filter(d => d.status === 'em_rota')
                             : MOCK_DRIVERS}
                         onDriverClick={handleDriverClick}
-                        onBack={goBack}
                     />
                 );
             default:

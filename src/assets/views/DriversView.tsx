@@ -5,7 +5,6 @@ import DriversTable from '../components/tables/DriversTable';
 interface DriversViewProps {
     drivers: Driver[];
     onDriverClick: (driver: Driver) => void;
-    onBack: () => void;
 }
 
 const DriversView = ({ drivers, onDriverClick }: DriversViewProps) => {

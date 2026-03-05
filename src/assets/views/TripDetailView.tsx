@@ -63,7 +63,7 @@ const TripDetailView = ({ trip, driver, onBack }: TripDetailViewProps) => {
                         <div className="trip-stat">
                             <Zap size={14} className="text-amber-400" />
                             <span className="trip-stat-label">KM Ocioso</span>
-                            <span className="trip-stat-value">{calculateIdleKm(trip.distance, trip.plannedKm).toFixed(1)} km</span>
+                            <span className="trip-stat-value">{calculateTripIdleKm(trip).toFixed(1)} km</span>
                         </div>
                     </div>
 
