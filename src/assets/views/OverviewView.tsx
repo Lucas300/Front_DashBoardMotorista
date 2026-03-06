@@ -12,9 +12,9 @@ interface OverviewViewProps {
     onIdleRankingClick: () => void;
 }
 
-const OverviewView = ({ 
-    drivers, 
-    onViewDrivers, 
+const OverviewView = ({
+    drivers,
+    onViewDrivers,
     onDriverClick,
     onTripsClick,
     onAlertsClick,
@@ -29,8 +29,7 @@ const OverviewView = ({
                     <span>Ver Motoristas</span>
                 </button>
             </div>
-            <StatsPanel 
-                drivers={drivers}
+            <StatsPanel
                 onTripsClick={onTripsClick}
                 onAlertsClick={onAlertsClick}
                 onIdleRankingClick={onIdleRankingClick}

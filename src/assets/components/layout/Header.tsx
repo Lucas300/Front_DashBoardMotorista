@@ -8,9 +8,10 @@ import type { DynamicAlert } from '../../utils/tripUtils';
 interface HeaderProps {
     activeDriver: Driver | null;
     allDrivers: Driver[];
+    onAlertClick: (alert: DynamicAlert) => void;
 }
 
-const Header = ({ activeDriver, allDrivers }: HeaderProps) => {
+const Header = ({ activeDriver, allDrivers, onAlertClick }: HeaderProps) => {
     const driver = activeDriver ?? allDrivers[0];
     const [showNotifications, setShowNotifications] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -27,6 +28,11 @@ const Header = ({ activeDriver, allDrivers }: HeaderProps) => {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
+
+    const handleAlertItemClick = (alert: DynamicAlert) => {
+        onAlertClick(alert);
+        setShowNotifications(false);
+    };
 
     const getAlertIcon = (type: DynamicAlert['type']) => {
         switch (type) {
@@ -74,7 +80,12 @@ const Header = ({ activeDriver, allDrivers }: HeaderProps) => {
                             <div className="notifications-list">
                                 {alerts.length > 0 ? (
                                     alerts.map((alert) => (
-                                        <div key={alert.id} className="notification-item">
+                                        <div
+                                            key={alert.id}
+                                            className="notification-item"
+                                            onClick={() => handleAlertItemClick(alert)}
+                                            style={{ cursor: 'pointer' }}
+                                        >
                                             <div className="notification-icon-wrapper">
                                                 {getAlertIcon(alert.type)}
                                             </div>

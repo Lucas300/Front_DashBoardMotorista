@@ -9,14 +9,15 @@ interface MainLayoutProps {
     activeDriver: Driver | null;
     allDrivers: Driver[];
     onNavigate: (view: ViewName) => void;
+    onAlertClick: (alert: any) => void;
 }
 
-const MainLayout = ({ children, activeView, activeDriver, allDrivers, onNavigate }: MainLayoutProps) => {
+const MainLayout = ({ children, activeView, activeDriver, allDrivers, onNavigate, onAlertClick }: MainLayoutProps) => {
     return (
         <div className="app-root">
             <Sidebar activeView={activeView} onNavigate={onNavigate} />
             <div className="main-wrapper">
-                <Header activeDriver={activeDriver} allDrivers={allDrivers} />
+                <Header activeDriver={activeDriver} allDrivers={allDrivers} onAlertClick={onAlertClick} />
                 <main className="main-content">
                     {children}
                 </main>

@@ -1,17 +1,16 @@
 import { MapPin, AlertTriangle, Zap } from 'lucide-react';
-import type { Driver } from '../../types';
+import type { Trip } from '../../types';
 import { MOCK_TRIPS } from '../../data/mockData';
 import { calculateGlobalIdleKm } from '../../utils/tripUtils';
 
 interface StatsPanelProps {
-    drivers: Driver[];
     onTripsClick: () => void;
     onAlertsClick: () => void;
     onIdleRankingClick: () => void;
 }
 
 // Calculate general metrics (not driver-specific)
-const calculateMetrics = (drivers: Driver[], trips: typeof MOCK_TRIPS) => {
+const calculateMetrics = (trips: Trip[]) => {
     // Total trips (all recorded trips)
     const totalTrips = trips.length;
 
@@ -24,8 +23,8 @@ const calculateMetrics = (drivers: Driver[], trips: typeof MOCK_TRIPS) => {
     return { totalTrips, totalAlerts, totalIdleKm };
 };
 
-const StatsPanel = ({ drivers, onTripsClick, onAlertsClick, onIdleRankingClick }: StatsPanelProps) => {
-    const { totalTrips, totalAlerts, totalIdleKm } = calculateMetrics(drivers, MOCK_TRIPS);
+const StatsPanel = ({ onTripsClick, onAlertsClick, onIdleRankingClick }: StatsPanelProps) => {
+    const { totalTrips, totalAlerts, totalIdleKm } = calculateMetrics(MOCK_TRIPS);
 
     return (
         <div className="stats-panel">

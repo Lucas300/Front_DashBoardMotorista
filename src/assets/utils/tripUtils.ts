@@ -1,3 +1,4 @@
+import { formatTimeBR } from './dateUtils';
 import type { Trip } from '../types';
 
 /**
@@ -33,10 +34,11 @@ export const calculateGlobalIdleKm = (trips: Trip[]): number => {
 
 export interface DynamicAlert {
     id: number | string;
+    driverId: string;
     titulo: string;
     desc: string;
     tempo: string;
-    type: 'speeding' | 'route_deviation' | 'idle' | 'generic';
+    type: 'speeding' | 'route_deviation' | 'idle' | 'generic' | 'braking' | 'geofence';
 }
 
 /**
@@ -46,48 +48,56 @@ export const generateDynamicAlerts = (drivers: any[], trips: Trip[]): DynamicAle
     const alerts: DynamicAlert[] = [];
     let idCounter = 1;
 
-    // 1. Check for route deviations in trips
-    trips.forEach(trip => {
-        const routeDeviationAlert = trip.alerts.find(a => a.type === 'route_deviation');
-        if (routeDeviationAlert) {
-            const driver = drivers.find(d => d.id === trip.driverId);
+    // Filter trips that have alerts
+    const tripsWithAlerts = trips.filter(trip => trip.alerts && trip.alerts.length > 0);
+
+    tripsWithAlerts.forEach(trip => {
+        const driver = drivers.find(d => d.id === trip.driverId);
+        if (!driver) return;
+
+        trip.alerts.forEach(alert => {
+            let dynamicDesc = "";
+            const idleKm = calculateTripIdleKm(trip);
+            const deviationKm = Math.max(0, trip.distance - trip.plannedKm);
+
+            switch (alert.type) {
+                case 'idle':
+                    dynamicDesc = `${driver.name} está com ${idleKm.toFixed(1)}km de ociosidade acumulada`;
+                    break;
+                case 'speeding':
+                    dynamicDesc = `${driver.name} excedeu a velocidade na rota`;
+                    break;
+                case 'route_deviation':
+                    dynamicDesc = `${driver.name} desviou ${deviationKm.toFixed(1)}km da rota planejada`;
+                    break;
+                case 'braking':
+                    dynamicDesc = `${driver.name} realizou uma frenagem brusca`;
+                    break;
+                default:
+                    dynamicDesc = `${driver.name}: ${alert.description}`;
+            }
+
             alerts.push({
-                id: idCounter++,
-                titulo: "Desvio de rota detectado",
-                desc: `${driver?.name || 'Motorista'} desviou da rota planejada`,
-                tempo: "2h atrás", // In a real app, this would be calculated from alert.timestamp
-                type: 'route_deviation'
+                id: `alert-${idCounter++}`,
+                driverId: driver.id,
+                titulo: getAlertTitle(alert.type),
+                desc: dynamicDesc,
+                tempo: formatTimeBR(alert.timestamp),
+                type: alert.type as any
             });
-        }
+        });
     });
 
-    // 2. Check for idle KM in drivers
-    drivers.forEach(driver => {
-        if (driver.idleKm > 0) {
-            alerts.push({
-                id: idCounter++,
-                titulo: "Motorista com ociosidade",
-                desc: `${driver.name} está com ${driver.idleKm}km de ociosidade acumulada`,
-                tempo: "1h atrás",
-                type: 'idle'
-            });
-        }
-    });
+    return alerts.sort((a, b) => b.tempo.localeCompare(a.tempo));
+};
 
-    // 3. Check for speeding
-    trips.forEach(trip => {
-        const speedingAlert = trip.alerts.find(a => a.type === 'speeding');
-        if (speedingAlert) {
-            const driver = drivers.find(d => d.id === trip.driverId);
-            alerts.push({
-                id: idCounter++,
-                titulo: "Excesso de Velocidade",
-                desc: `Veículo de ${driver?.name || 'Motorista'} com excesso de velocidade`,
-                tempo: "30min atrás",
-                type: 'speeding'
-            });
-        }
-    });
-
-    return alerts;
+const getAlertTitle = (type: string): string => {
+    switch (type) {
+        case 'speeding': return "Excesso de Velocidade";
+        case 'route_deviation': return "Desvio de Rota";
+        case 'idle': return "Ociosidade Detectada";
+        case 'braking': return "Frenagem Brusca";
+        case 'geofence': return "Cerca Eletrônica";
+        default: return "Alerta de Viagem";
+    }
 };

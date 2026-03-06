@@ -16,6 +16,7 @@ const Dashboard = () => {
     const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
     const [animKey, setAnimKey] = useState(0);
     const [alertsFilter, setAlertsFilter] = useState(false);
+    const [showAlertsOnly, setShowAlertsOnly] = useState(false);
 
     const navigate = useCallback((next: ViewName) => {
         setViewHistory((prev) => [...prev, view]);
@@ -37,6 +38,7 @@ const Dashboard = () => {
         setSelectedTrip(null);
         setViewHistory([]);
         setAlertsFilter(false);
+        setShowAlertsOnly(false);
         setView(navView);
         setAnimKey((k) => k + 1);
     }, []);
@@ -47,6 +49,7 @@ const Dashboard = () => {
 
     const handleDriverClick = useCallback((driver: Driver) => {
         setSelectedDriver(driver);
+        setShowAlertsOnly(false);
         navigate('driver_trips');
     }, [navigate]);
 
@@ -70,12 +73,26 @@ const Dashboard = () => {
         navigate('history');
     }, [navigate]);
 
+    const handleAlertClick = useCallback((alert: any) => {
+        const driver = MOCK_DRIVERS.find(d => d.id === alert.driverId);
+        if (driver) {
+            setSelectedDriver(driver);
+            setShowAlertsOnly(true);
+            navigate('driver_trips');
+        }
+    }, [navigate]);
+
     const handleIdleRankingClick = useCallback(() => {
         navigate('idle_ranking');
     }, [navigate]);
 
     const driverTrips = selectedDriver
-        ? MOCK_TRIPS.filter((t) => t.driverId === selectedDriver.id)
+        ? MOCK_TRIPS.filter((t) => {
+            const isDriverTrip = t.driverId === selectedDriver.id;
+            if (!isDriverTrip) return false;
+            if (showAlertsOnly) return t.alerts && t.alerts.length > 0;
+            return true;
+        })
         : [];
 
     const renderView = () => {
@@ -153,6 +170,7 @@ const Dashboard = () => {
             activeDriver={selectedDriver}
             allDrivers={MOCK_DRIVERS}
             onNavigate={handleNavigate}
+            onAlertClick={handleAlertClick}
         >
             <div key={animKey} className="view-animate">
                 {renderView()}
