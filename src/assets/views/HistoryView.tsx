@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react';
 import type { Driver, Trip, TripStatus } from '../types';
-import { Search, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+import { AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
 import { formatDateBR, formatTimeBR } from '../utils/dateUtils';
+import TableSearchFilter from '../components/tables/TableSearchFilter';
 
 interface HistoryViewProps {
     trips: Trip[];
@@ -26,6 +27,7 @@ const alertTypeLabel: Record<string, string> = {
 
 const HistoryView = ({ trips, drivers, onTripClick, alertsFilter }: HistoryViewProps) => {
     const [searchQuery, setSearchQuery] = useState('');
+    const [selectedFilter, setSelectedFilter] = useState('all');
 
     const getDriverById = (driverId: string): Driver | undefined => {
         return drivers.find(d => d.id === driverId);
@@ -34,12 +36,31 @@ const HistoryView = ({ trips, drivers, onTripClick, alertsFilter }: HistoryViewP
     const filteredTrips = useMemo(() => {
         let result = trips;
 
-        // Apply alerts filter first if activated
+        // Apply alerts filter first if activated (internal component filter)
         if (alertsFilter) {
             result = result.filter(trip => trip.alerts.length > 0)
                 .sort((a, b) => b.alerts.length - a.alerts.length);
         }
 
+        // Apply Dropdown Filter Logic
+        if (selectedFilter !== 'all') {
+            result = result.filter(trip => {
+                switch (selectedFilter) {
+                    case 'exceededKm':
+                        return trip.exceededKm === true;
+                    case 'speeding':
+                        return trip.alerts.some(a => a.type === 'speeding');
+                    case 'route_deviation':
+                        return trip.alerts.some(a => a.type === 'route_deviation');
+                    case 'delayed':
+                        return trip.delayed === true;
+                    default:
+                        return true;
+                }
+            });
+        }
+
+        // Apply Search Query Logic (Search works together with dropdown)
         if (!searchQuery.trim()) {
             return result;
         }
@@ -49,34 +70,23 @@ const HistoryView = ({ trips, drivers, onTripClick, alertsFilter }: HistoryViewP
         return result.filter(trip => {
             const driver = getDriverById(trip.driverId);
             const driverName = driver?.name.toLowerCase() ?? '';
-            const vehicle = driver?.vehicle.toLowerCase() ?? '';
-            const licensePlate = driver?.licensePlate.toLowerCase() ?? '';
 
-            // Search across all visible fields
-            const matchesDriver = driverName.includes(query);
-            const matchesVehicle = vehicle.includes(query);
-            const matchesLicensePlate = licensePlate.includes(query);
-            const matchesDate = formatDateBR(trip.date).includes(query);
-            const matchesStatus = statusLabels[trip.status].toLowerCase().includes(query);
-            const matchesDistance = trip.distance.toString().includes(query);
-            const matchesPlannedKm = trip.plannedKm.toString().includes(query);
-            const matchesStartTime = formatTimeBR(trip.startTime).includes(query);
-            const matchesEndTime = formatTimeBR(trip.endTime).includes(query);
-            const matchesDelayed = trip.delayed ? 'atraso'.includes(query) || 'sim'.includes(query) : 'não'.includes(query) || 'nao'.includes(query);
-            const matchesExceededKm = trip.exceededKm ? 'excedeu'.includes(query) || 'sim'.includes(query) : 'não'.includes(query) || 'nao'.includes(query);
+            const dataMap: Record<string, string> = {
+                driver: driverName,
+                date: formatDateBR(trip.date).toLowerCase(),
+                status: statusLabels[trip.status].toLowerCase(),
+                distance: trip.distance.toString(),
+                plannedKm: trip.plannedKm.toString(),
+                startTime: formatTimeBR(trip.startTime).toLowerCase(),
+                endTime: formatTimeBR(trip.endTime).toLowerCase(),
+                delayed: trip.delayed ? 'sim' : 'não',
+                exceededKm: trip.exceededKm ? 'sim' : 'não',
+                alerts: trip.alerts.map(a => `${a.type} ${alertTypeLabel[a.type] ?? ''} ${a.description}`).join(' ').toLowerCase()
+            };
 
-            // Search in alerts
-            const matchesAlerts = trip.alerts.some(alert =>
-                alert.type.toLowerCase().includes(query) ||
-                alertTypeLabel[alert.type]?.toLowerCase().includes(query) ||
-                alert.description.toLowerCase().includes(query)
-            );
-
-            return matchesDriver || matchesVehicle || matchesLicensePlate || matchesDate ||
-                matchesStatus || matchesDistance || matchesPlannedKm || matchesStartTime ||
-                matchesEndTime || matchesDelayed || matchesExceededKm || matchesAlerts;
+            return Object.values(dataMap).some(val => val.includes(query));
         });
-    }, [trips, drivers, searchQuery, alertsFilter]);
+    }, [trips, drivers, searchQuery, selectedFilter, alertsFilter]);
 
     const handleTripClick = (trip: Trip) => {
         const driver = getDriverById(trip.driverId);
@@ -87,14 +97,6 @@ const HistoryView = ({ trips, drivers, onTripClick, alertsFilter }: HistoryViewP
 
     return (
         <div className="view-full">
-            {/* <div className="view-top-bar">
-                <button className="back-btn" onClick={onBack}>
-                        <ArrowLeft size={16} />
-                        <span>Voltar aaaaaaa</span>
-                    </button>
-            </div>
-            */}
-
             <div className="table-container">
                 <div className="table-toolbar">
                     <div className="table-toolbar-left">
@@ -105,17 +107,13 @@ const HistoryView = ({ trips, drivers, onTripClick, alertsFilter }: HistoryViewP
                     </div>
 
                     <div className="table-toolbar-right">
-                        <div className="search-bar">
-                            <Search size={16} className="search-icon" />
-                            <input
-                                type="text"
-                                className="search-input"
-                                placeholder="Buscar por motorista, data, status, alertas..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                style={{ width: '320px' }}
-                            />
-                        </div>
+                        <TableSearchFilter
+                            searchQuery={searchQuery}
+                            onSearchChange={setSearchQuery}
+                            selectedFilter={selectedFilter}
+                            onFilterChange={setSelectedFilter}
+                            placeholder="Buscar por motorista, data..."
+                        />
                     </div>
                 </div>
 

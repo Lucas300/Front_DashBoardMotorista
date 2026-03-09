@@ -47,6 +47,8 @@ const Header = ({ activeDriver, allDrivers, onAlertClick }: HeaderProps) => {
         <header className="header">
             <div className="header-profile">
                 <div className="profile-info">
+                    {/*Versão que troca pelos motoristas*/}
+                    {/*
                     <span className="profile-name">{driver.name}</span>
                     <span className={`profile-status ${driver.status === 'em_rota' || driver.status === 'online' ? 'status--online' : 'status--offline'}`}>
                         {driver.status === 'em_rota' ? 'Online' : driver.status === 'online' ? 'Online' : driver.status === 'pausado' ? 'Pausado' : 'Offline'}
@@ -54,6 +56,20 @@ const Header = ({ activeDriver, allDrivers, onAlertClick }: HeaderProps) => {
                 </div>
                 <img
                     src={driver.avatar}
+                    alt={driver.name}
+                    className="profile-avatar"
+                    onError={(e) => {
+                        (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(driver.name)}&background=1a2744&color=60a5fa&size=64`;
+                    }}
+                />
+                    */}
+                    <span className="profile-name">{"Administrador"}</span>
+                    <span className={`profile-status ${'online'}`}>
+                        {'Online'}
+                    </span>
+                </div>
+                <img
+                    src={"https://api.dicebear.com/7.x/avataaars/svg?seed=Matheus"}
                     alt={driver.name}
                     className="profile-avatar"
                     onError={(e) => {

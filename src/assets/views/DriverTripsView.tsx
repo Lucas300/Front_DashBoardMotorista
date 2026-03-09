@@ -14,6 +14,7 @@ interface DriverTripsViewProps {
 
 const DriverTripsView = ({ driver, trips, onTripClick, onBack }: DriverTripsViewProps) => {
     const [searchQuery, setSearchQuery] = useState('');
+    const [selectedFilter, setSelectedFilter] = useState('all');
 
     const totalIdleKm = useMemo(() => {
         return calculateDriverIdleKm(driver.id, trips);
@@ -23,32 +24,60 @@ const DriverTripsView = ({ driver, trips, onTripClick, onBack }: DriverTripsView
     const totalTrips = trips.length;
     const totalAlerts = trips.reduce((sum, trip) => sum + trip.alerts.length, 0);
 
-    // Filter trips based on search query
+    const alertTypeLabel: Record<string, string> = {
+        speeding: 'Velocidade',
+        braking: 'Frenagem',
+        route_deviation: 'Desvio',
+        idle: 'Parado',
+        geofence: 'Cerca',
+    };
+
+    // Filter trips based on search query and selected filter
     const filteredTrips = useMemo(() => {
+        let result = trips;
+
+        // Apply Dropdown Filter Logic
+        if (selectedFilter !== 'all') {
+            result = result.filter(trip => {
+                switch (selectedFilter) {
+                    case 'exceededKm':
+                        return trip.exceededKm === true;
+                    case 'speeding':
+                        return trip.alerts.some(a => a.type === 'speeding');
+                    case 'route_deviation':
+                        return trip.alerts.some(a => a.type === 'route_deviation');
+                    case 'delayed':
+                        return trip.delayed === true;
+                    default:
+                        return true;
+                }
+            });
+        }
+
+        // Apply Search Query Logic
         if (!searchQuery.trim()) {
-            return trips;
+            return result;
         }
 
         const query = searchQuery.toLowerCase();
 
-        return trips.filter((trip) => {
-            // Search across all visible columns
-            const dateMatch = formatDateBR(trip.date).includes(query);
-            const distanceMatch = trip.distance.toString().includes(query);
-            const plannedKmMatch = trip.plannedKm.toString().includes(query);
-            const alertsMatch = trip.alerts.length > 0 && trip.alerts.some(
-                (alert) => alert.type.toLowerCase().includes(query) || alert.description.toLowerCase().includes(query)
-            );
-            const delayedMatch = trip.delayed ? 'sim'.includes(query) : 'não'.includes(query) || 'nao'.includes(query);
-            const exceededKmMatch = trip.exceededKm ? 'sim'.includes(query) : 'não'.includes(query) || 'nao'.includes(query);
-            const startTimeMatch = trip.startTime.toLowerCase().includes(query);
-            const endTimeMatch = trip.endTime.toLowerCase().includes(query);
-            const statusMatch = trip.status.toLowerCase().includes(query);
+        return result.filter((trip) => {
+            // Map column values to searchable strings
+            const dataMap: Record<string, string> = {
+                date: formatDateBR(trip.date).toLowerCase(),
+                distance: trip.distance.toString(),
+                plannedKm: trip.plannedKm.toString(),
+                alerts: trip.alerts.map(a => `${a.type} ${alertTypeLabel[a.type] ?? ''} ${a.description}`).join(' ').toLowerCase(),
+                delayed: trip.delayed ? 'sim' : 'não',
+                exceededKm: trip.exceededKm ? 'sim' : 'não',
+                startTime: trip.startTime.toLowerCase(),
+                endTime: trip.endTime.toLowerCase(),
+                status: trip.status.toLowerCase()
+            };
 
-            return dateMatch || distanceMatch || plannedKmMatch || alertsMatch || delayedMatch ||
-                exceededKmMatch || startTimeMatch || endTimeMatch || statusMatch;
+            return Object.values(dataMap).some(val => val.includes(query));
         });
-    }, [trips, searchQuery]);
+    }, [trips, searchQuery, selectedFilter]);
 
     return (
         <div className="view-full">
@@ -91,6 +120,8 @@ const DriverTripsView = ({ driver, trips, onTripClick, onBack }: DriverTripsView
                 onBack={onBack}
                 searchQuery={searchQuery}
                 onSearchChange={setSearchQuery}
+                selectedFilter={selectedFilter}
+                onFilterChange={setSelectedFilter}
             />
         </div>
     );

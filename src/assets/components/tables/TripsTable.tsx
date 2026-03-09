@@ -1,6 +1,7 @@
 import type { Trip } from '../../types';
-import { ArrowLeft, AlertTriangle, CheckCircle, XCircle, Search } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
 import { formatDateBR, formatTimeBR } from '../../utils/dateUtils';
+import TableSearchFilter from './TableSearchFilter';
 
 interface TripsTableProps {
     trips: Trip[];
@@ -9,6 +10,8 @@ interface TripsTableProps {
     onBack: () => void;
     searchQuery?: string;
     onSearchChange?: (query: string) => void;
+    selectedFilter?: string;
+    onFilterChange?: (filter: string) => void;
 }
 
 const alertTypeLabel: Record<string, string> = {
@@ -19,7 +22,16 @@ const alertTypeLabel: Record<string, string> = {
     geofence: 'Cerca',
 };
 
-const TripsTable = ({ trips, driverName, onTripClick, onBack, searchQuery = '', onSearchChange }: TripsTableProps) => {
+const TripsTable = ({
+    trips,
+    driverName,
+    onTripClick,
+    onBack,
+    searchQuery = '',
+    onSearchChange,
+    selectedFilter = 'all',
+    onFilterChange
+}: TripsTableProps) => {
     return (
         <div className="table-container">
             <div className="table-toolbar">
@@ -30,17 +42,14 @@ const TripsTable = ({ trips, driverName, onTripClick, onBack, searchQuery = '', 
                     </button>
                     <h2 className="table-title">Corridas — {driverName}</h2>
                 </div>
-                {onSearchChange && (
-                    <div className="search-bar">
-                        <Search size={16} className="search-icon" />
-                        <input
-                            type="text"
-                            className="search-input"
-                            placeholder="Buscar em todas as colunas..."
-                            value={searchQuery}
-                            onChange={(e) => onSearchChange(e.target.value)}
-                        />
-                    </div>
+                {onSearchChange && onFilterChange && (
+                    <TableSearchFilter
+                        searchQuery={searchQuery}
+                        onSearchChange={onSearchChange}
+                        selectedFilter={selectedFilter}
+                        onFilterChange={onFilterChange}
+                        placeholder="Buscar nesta tabela..."
+                    />
                 )}
             </div>
 

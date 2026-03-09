@@ -814,6 +814,12 @@ body {
   background: var(--accent-dim);
 }
 
+.table-filter-system {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .search-bar {
   position: relative;
   flex-shrink: 0;

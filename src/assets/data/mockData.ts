@@ -17,7 +17,7 @@ export const MOCK_DRIVERS: Driver[] = [
     },
     {
         id: 'd2',
-        name: 'Osasco Tavares',
+        name: 'Thiago Tavares',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Osasco',
         vehicle: 'Paradiso G7 1800',
         licensePlate: '2024-4',
@@ -148,8 +148,8 @@ export const MOCK_TRIPS: Trip[] = [
         plannedKm: 10.0,
         delayed: true,
         exceededKm: true,
-        startTime: '11:00 AM',
-        endTime: '09:45 AM',
+        startTime: '09:00 AM',
+        endTime: '10:00 AM',
         status: 'concluida',
         alerts: [
             {

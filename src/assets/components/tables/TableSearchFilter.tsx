@@ -16,15 +16,10 @@ interface TableSearchFilterProps {
 
 const defaultOptions: FilterOption[] = [
     { value: 'all', label: 'Todos' },
-    { value: 'date', label: 'Data' },
-    { value: 'distance', label: 'Distância Real' },
-    { value: 'plannedKm', label: 'KM Planejado' },
-    { value: 'status', label: 'Status' },
-    { value: 'alerts', label: 'Alertas' },
-    { value: 'delayed', label: 'Atraso' },
     { value: 'exceededKm', label: 'Excedeu KM' },
-    { value: 'startTime', label: 'Início' },
-    { value: 'endTime', label: 'Final' },
+    { value: 'speeding', label: 'Velocidade' },
+    { value: 'route_deviation', label: 'Desvio' },
+    { value: 'delayed', label: 'Atrasado' },
 ];
 
 const TableSearchFilter = ({
