@@ -63,7 +63,7 @@ export const MOCK_DRIVERS: Driver[] = [
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Maria',
         vehicle: '17-230 OD / 18-330 OT',
         licensePlate: '2026-3',
-        status: 'pausado',
+        status: 'offline',
         position: { lat: -23.5791, lng: -46.6891 },
         tripsToday: 3,
         onlineTime: '02:00:20',

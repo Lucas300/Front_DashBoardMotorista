@@ -69,7 +69,7 @@ const Header = ({ activeDriver, allDrivers, onAlertClick }: HeaderProps) => {
                     </span>
                 </div>
                 <img
-                    src={"https://api.dicebear.com/7.x/avataaars/svg?seed=Matheus"}
+                    src={"https://api.dicebear.com/7.x/avataaars/svg?seed=Diego"}
                     alt={driver.name}
                     className="profile-avatar"
                     onError={(e) => {
