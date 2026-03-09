@@ -40,6 +40,12 @@ export interface Trip {
   status: TripStatus;
   route: RoutePoint[];
   plannedRoute?: RoutePoint[];
+  idleRoute?: RoutePoint[];
+  idleRouteMetrics?: {
+    distance: number;
+    duration: string;
+    startPoint: string;
+  };
   origin: RoutePoint;
   destination: RoutePoint;
 }

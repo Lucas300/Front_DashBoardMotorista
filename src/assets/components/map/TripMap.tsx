@@ -4,7 +4,7 @@ import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import type { Trip, Alert, BusStop } from '../../types';
 import { formatTimeBR } from '../../utils/dateUtils';
-import { Users, Clock, Eye, EyeOff } from 'lucide-react';
+import { Users, Clock, MapPin, Eye, EyeOff } from 'lucide-react';
 
 delete (L.Icon.Default.prototype as unknown as Record<string, unknown>)._getIconUrl;
 L.Icon.Default.mergeOptions({
@@ -44,6 +44,20 @@ const createStopIcon = (stop: BusStop) => {
     return L.divIcon({ html: svg, className: '', iconSize: [28, 28], iconAnchor: [14, 14] });
 };
 
+const ignitionIcon = L.divIcon({
+    html: `
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+      <circle cx="16" cy="16" r="14" fill="#f59e0b" opacity="0.2">
+        <animate attributeName="r" values="10;14;10" dur="2s" repeatCount="indefinite" />
+      </circle>
+      <circle cx="16" cy="16" r="10" fill="#f59e0b" stroke="white" stroke-width="2"/>
+      <path d="M16 10v12M12 16h8" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    </svg>`,
+    className: '',
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+});
+
 const startIcon = L.divIcon({
     html: `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="12" fill="#10b981" stroke="white" stroke-width="2"/><text x="16" y="20" text-anchor="middle" fill="white" font-size="10" font-weight="bold" font-family="sans-serif">A</text></svg>`,
     className: '',
@@ -64,6 +78,7 @@ interface TripMapProps {
 
 const TripMap = ({ trip }: TripMapProps) => {
     const [showStops, setShowStops] = useState(true);
+    const [showIdleRoute, setShowIdleRoute] = useState(true);
     const [minPassengers, setMinPassengers] = useState(0);
     const [selectedPeriod, setSelectedPeriod] = useState('all');
 
@@ -73,6 +88,7 @@ const TripMap = ({ trip }: TripMapProps) => {
 
     const center = trip.route[Math.floor(trip.route.length / 2)];
     const hasPlannedRoute = !!trip.plannedRoute;
+    const hasIdleRoute = !!trip.idleRoute && trip.idleRoute.length > 0;
     const isOngoing = trip.status === 'em_andamento';
     const isCompleted = trip.status === 'concluida';
 
@@ -128,6 +144,56 @@ const TripMap = ({ trip }: TripMapProps) => {
                     url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                     attribution='&copy; OpenStreetMap contributors &copy; CARTO'
                 />
+
+                {/* Idle route - dashed amber (#f59e0b) */}
+                {hasIdleRoute && showIdleRoute && (
+                    <>
+                        <Polyline
+                            positions={trip.idleRoute!.map((p) => [p.lat, p.lng])}
+                            pathOptions={{
+                                color: '#f59e0b',
+                                weight: 4,
+                                opacity: 0.7,
+                                dashArray: '10, 10'
+                            }}
+                        >
+                            <Popup>
+                                <div className="p-2 min-w-[200px]">
+                                    <h4 className="font-bold text-amber-500 mb-2 flex items-center gap-2">
+                                        <Clock size={14} /> Linha Ociosa
+                                    </h4>
+                                    <div className="space-y-1 text-xs">
+                                        <p><b>Ponto de Partida:</b> {trip.idleRouteMetrics?.startPoint}</p>
+                                        <p><b>Destino:</b> {trip.stops[0]?.name || 'Origem'}</p>
+                                        <p><b>Distância Total:</b> {trip.idleRouteMetrics?.distance} km</p>
+                                        <p><b>Tempo Estimado:</b> {trip.idleRouteMetrics?.duration}</p>
+                                    </div>
+                                </div>
+                            </Popup>
+                        </Polyline>
+
+                        {/* Ignition Point Marker */}
+                        <Marker
+                            position={[trip.idleRoute![0].lat, trip.idleRoute![0].lng]}
+                            icon={ignitionIcon}
+                        >
+                            <Popup>
+                                <div className="p-2 min-w-[200px]">
+                                    <h4 className="font-bold text-amber-500 mb-2 flex items-center gap-2">
+                                        <MapPin size={14} /> Ponto de Partida
+                                    </h4>
+                                    <div className="space-y-1 text-xs">
+                                        <p><b>Local:</b> {trip.idleRouteMetrics?.startPoint}</p>
+                                        <p><b>Destino:</b> {trip.stops[0]?.name || 'Origem'}</p>
+                                        <p><b>Distância Ociosa:</b> {trip.idleRouteMetrics?.distance} km</p>
+                                        <p><b>Tempo:</b> {trip.idleRouteMetrics?.duration}</p>
+                                    </div>
+                                </div>
+                            </Popup>
+                        </Marker>
+                    </>
+                )}
+
                 {/* Planned route - always green (#10b981) */}
                 {hasPlannedRoute && (
                     <Polyline
@@ -230,6 +296,15 @@ const TripMap = ({ trip }: TripMapProps) => {
                         Paradas
                     </button>
 
+                    <button
+                        className={`control-btn ${showIdleRoute ? 'active' : ''}`}
+                        onClick={() => setShowIdleRoute(!showIdleRoute)}
+                        disabled={!hasIdleRoute}
+                    >
+                        {showIdleRoute ? <Eye size={14} /> : <EyeOff size={14} />}
+                        Ociosa
+                    </button>
+
                     <select
                         className="control-select"
                         value={selectedPeriod}
@@ -260,37 +335,16 @@ const TripMap = ({ trip }: TripMapProps) => {
                     <span className="legend-dot" style={{ background: '#3b82f6' }} />
                     <span>Destino</span>
                 </div>
-                <div className="legend-item">
-                    <span className="legend-dot" style={{ background: '#3b82f6', border: '2px solid white' }} />
-                    <span>Parada</span>
-                </div>
-                <div className="legend-item">
-                    <span className="legend-dot" style={{ background: '#8b5cf6', border: '2px solid white' }} />
-                    <span>Alto Fluxo</span>
-                </div>
-                {trip.alerts.length > 0 && (
+                {hasIdleRoute && (
                     <div className="legend-item">
-                        <span className="legend-dot" style={{ background: '#ef4444' }} />
-                        <span>{trip.alerts.length} Alerta(s)</span>
+                        <span className="legend-line-dashed" />
+                        <span>Linha Ociosa</span>
                     </div>
                 )}
-                {hasPlannedRoute ? (
-                    <>
-                        <div className="legend-item">
-                            <span className="legend-line" style={{ background: '#10b981' }} />
-                            <span>Rota Planejada</span>
-                        </div>
-                        <div className="legend-item">
-                            <span className="legend-line" style={{ background: '#ef4444' }} />
-                            <span>Rota Real</span>
-                        </div>
-                    </>
-                ) : (
-                    <div className="legend-item">
-                        <span className="legend-line" style={{ background: '#10b981' }} />
-                        <span>Rota</span>
-                    </div>
-                )}
+                <div className="legend-item">
+                    <span className="legend-line" style={{ background: '#10b981' }} />
+                    <span>Rota</span>
+                </div>
             </div>
         </div>
     );

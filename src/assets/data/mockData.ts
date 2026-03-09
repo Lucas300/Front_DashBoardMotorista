@@ -136,6 +136,17 @@ export const MOCK_TRIPS: Trip[] = [
             { lat: -23.5510, lng: -46.6470 },
             { lat: -23.5480, lng: -46.6420 },
         ],
+        idleRoute: [
+            { lat: -23.5700, lng: -46.6600 },
+            { lat: -23.5680, lng: -46.6580 },
+            { lat: -23.5650, lng: -46.6570 },
+            { lat: -23.5613, lng: -46.6558 },
+        ],
+        idleRouteMetrics: {
+            distance: 1.5,
+            duration: '8 min',
+            startPoint: 'Garagem Central',
+        },
         origin: { lat: -23.5613, lng: -46.6558 },
         destination: { lat: -23.5480, lng: -46.6420 },
     },

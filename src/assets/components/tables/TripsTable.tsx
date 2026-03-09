@@ -1,5 +1,5 @@
 import type { Trip } from '../../types';
-import { AlertTriangle, ArrowLeft, ChevronRight } from 'lucide-react';
+import { AlertTriangle, ArrowLeft} from 'lucide-react';
 import { formatDateBR, formatTimeBR } from '../../utils/dateUtils';
 import TableSearchFilter from './TableSearchFilter';
 
