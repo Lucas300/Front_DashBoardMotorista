@@ -1,5 +1,5 @@
 import type { Trip } from '../../types';
-import { ArrowLeft, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, ChevronRight } from 'lucide-react';
 import { formatDateBR, formatTimeBR } from '../../utils/dateUtils';
 import TableSearchFilter from './TableSearchFilter';
 
@@ -58,11 +58,11 @@ const TripsTable = ({
                     <thead>
                         <tr>
                             <th>Data</th>
-                            <th>Distância Real</th>
-                            <th>KM Planejado</th>
+                            <th>Real</th>
+                            <th>Plan</th>
                             <th>Alertas</th>
                             <th>Atraso</th>
-                            <th>Excedeu KM</th>
+                            <th>KM+</th>
                             <th>Início</th>
                             <th>Final</th>
                         </tr>
@@ -72,9 +72,9 @@ const TripsTable = ({
                             <tr key={trip.id} className="table-row" onClick={() => onTripClick(trip)}>
                                 <td className="cell-muted">{formatDateBR(trip.date)}</td>
                                 <td>
-                                    <span className="cell-highlight">{trip.distance} km</span>
+                                    <span className="cell-highlight">{trip.distance}</span>
                                 </td>
-                                <td className="cell-muted">{trip.plannedKm} km</td>
+                                <td className="cell-muted">{trip.plannedKm}</td>
                                 <td>
                                     {trip.alerts.length > 0 ? (
                                         <div className="alerts-cell">
@@ -89,30 +89,14 @@ const TripsTable = ({
                                     )}
                                 </td>
                                 <td>
-                                    {trip.delayed ? (
-                                        <div className="flag-cell flag-cell--danger">
-                                            <XCircle size={14} />
-                                            <span>Sim</span>
-                                        </div>
-                                    ) : (
-                                        <div className="flag-cell flag-cell--ok">
-                                            <CheckCircle size={14} />
-                                            <span>Não</span>
-                                        </div>
-                                    )}
+                                    <span className={trip.delayed ? 'text-red-500 font-semibold' : 'text-gray-500 opacity-50'}>
+                                        {trip.delayed ? 'Sim' : 'Não'}
+                                    </span>
                                 </td>
                                 <td>
-                                    {trip.exceededKm ? (
-                                        <div className="flag-cell flag-cell--warning">
-                                            <XCircle size={14} />
-                                            <span>Sim</span>
-                                        </div>
-                                    ) : (
-                                        <div className="flag-cell flag-cell--ok">
-                                            <CheckCircle size={14} />
-                                            <span>Não</span>
-                                        </div>
-                                    )}
+                                    <span className={trip.exceededKm ? 'text-amber-500 font-semibold' : 'text-gray-500 opacity-50'}>
+                                        {trip.exceededKm ? 'Sim' : 'Não'}
+                                    </span>
                                 </td>
                                 <td className="cell-muted">{formatTimeBR(trip.startTime)}</td>
                                 <td className="cell-muted">{formatTimeBR(trip.endTime)}</td>

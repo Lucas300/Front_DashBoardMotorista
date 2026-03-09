@@ -882,7 +882,8 @@ body {
 
 .data-table-wrapper {
   flex: 1;
-  overflow: auto;
+  overflow: hidden;
+  /* No scrollbars on the wrapper */
   border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--bg-card);
@@ -891,14 +892,15 @@ body {
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 600px;
+  table-layout: auto;
+  /* Allow auto-adjustment based on content */
 }
 
 .data-table thead th {
-  padding: 13px 16px;
+  padding: 8px 10px;
   text-align: left;
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -907,6 +909,9 @@ body {
   position: sticky;
   top: 0;
   z-index: 2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .table-row {
@@ -924,9 +929,22 @@ body {
 }
 
 .data-table td {
-  padding: 13px 16px;
-  font-size: 13px;
+  padding: 8px 10px;
+  font-size: 12px;
+  /* Smaller for density */
   vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.text-compact {
+  font-size: 12px;
+  max-width: 100%;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .driver-cell {

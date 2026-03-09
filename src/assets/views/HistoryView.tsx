@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
 import type { Driver, Trip, TripStatus } from '../types';
-import { AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 import { formatDateBR, formatTimeBR } from '../utils/dateUtils';
 import TableSearchFilter from '../components/tables/TableSearchFilter';
 
@@ -123,12 +123,12 @@ const HistoryView = ({ trips, drivers, onTripClick, alertsFilter }: HistoryViewP
                             <tr>
                                 <th>Motorista</th>
                                 <th>Data</th>
-                                <th>Distância Real</th>
-                                <th>KM Planejado</th>
+                                <th>Real</th>
+                                <th>Plan</th>
                                 <th>Status</th>
                                 <th>Alertas</th>
                                 <th>Atraso</th>
-                                <th>Excedeu KM</th>
+                                <th>KM+</th>
                                 <th>Início</th>
                                 <th>Final</th>
                             </tr>
@@ -164,9 +164,9 @@ const HistoryView = ({ trips, drivers, onTripClick, alertsFilter }: HistoryViewP
                                         </td>
                                         <td className="cell-muted">{formatDateBR(trip.date)}</td>
                                         <td>
-                                            <span className="cell-highlight">{trip.distance} km</span>
+                                            <span className="cell-highlight">{trip.distance}</span>
                                         </td>
-                                        <td className="cell-muted">{trip.plannedKm} km</td>
+                                        <td className="cell-muted">{trip.plannedKm}</td>
                                         <td>
                                             <span className={`status-badge ${trip.status === 'em_andamento' ? 'badge--paused' :
                                                 trip.status === 'concluida' ? 'badge--online' :
@@ -189,30 +189,14 @@ const HistoryView = ({ trips, drivers, onTripClick, alertsFilter }: HistoryViewP
                                             )}
                                         </td>
                                         <td>
-                                            {trip.delayed ? (
-                                                <div className="flag-cell flag-cell--danger">
-                                                    <XCircle size={14} />
-                                                    <span>Sim</span>
-                                                </div>
-                                            ) : (
-                                                <div className="flag-cell flag-cell--ok">
-                                                    <CheckCircle size={14} />
-                                                    <span>Não</span>
-                                                </div>
-                                            )}
+                                            <span className={trip.delayed ? 'text-red-500 font-semibold' : 'text-gray-500 opactiy-50'}>
+                                                {trip.delayed ? 'Sim' : 'Não'}
+                                            </span>
                                         </td>
                                         <td>
-                                            {trip.exceededKm ? (
-                                                <div className="flag-cell flag-cell--warning">
-                                                    <XCircle size={14} />
-                                                    <span>Sim</span>
-                                                </div>
-                                            ) : (
-                                                <div className="flag-cell flag-cell--ok">
-                                                    <CheckCircle size={14} />
-                                                    <span>Não</span>
-                                                </div>
-                                            )}
+                                            <span className={trip.exceededKm ? 'text-amber-500 font-semibold' : 'text-gray-500 opacity-50'}>
+                                                {trip.exceededKm ? 'Sim' : 'Não'}
+                                            </span>
                                         </td>
                                         <td className="cell-muted">{formatTimeBR(trip.startTime)}</td>
                                         <td className="cell-muted">{formatTimeBR(trip.endTime)}</td>
