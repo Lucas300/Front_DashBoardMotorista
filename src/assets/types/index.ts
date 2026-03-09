@@ -15,6 +15,16 @@ export interface Alert {
   timestamp: string;
 }
 
+export interface BusStop {
+  id: string;
+  name: string;
+  position: RoutePoint;
+  arrivalTime: string;
+  departureTime: string;
+  passengersBoarded: number;
+  type: 'common' | 'high_traffic';
+}
+
 export interface Trip {
   id: string;
   driverId: string;
@@ -22,6 +32,7 @@ export interface Trip {
   distance: number;       // km real
   plannedKm: number;      // km planejado
   alerts: Alert[];
+  stops: BusStop[];
   delayed: boolean;
   exceededKm: boolean;
   startTime: string;

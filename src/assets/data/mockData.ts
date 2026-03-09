@@ -109,6 +109,26 @@ export const MOCK_TRIPS: Trip[] = [
                 timestamp: '10:45 AM',
             },
         ],
+        stops: [
+            {
+                id: 's1',
+                name: 'Parada Augusta',
+                position: { lat: -23.5580, lng: -46.6520 },
+                arrivalTime: '08:35 AM',
+                departureTime: '08:38 AM',
+                passengersBoarded: 8,
+                type: 'common',
+            },
+            {
+                id: 's3',
+                name: 'Terminal Bandeira',
+                position: { lat: -23.5510, lng: -46.6470 },
+                arrivalTime: '14:55 PM',
+                departureTime: '15:00 PM',
+                passengersBoarded: 15,
+                type: 'high_traffic',
+            },
+        ],
         route: [
             { lat: -23.5613, lng: -46.6558 },
             { lat: -23.5580, lng: -46.6520 },
@@ -131,6 +151,7 @@ export const MOCK_TRIPS: Trip[] = [
         endTime: '09:30 AM',
         status: 'concluida',
         alerts: [],
+        stops: [],
         route: [
             { lat: -23.5613, lng: -46.6558 },
             { lat: -23.5640, lng: -46.6600 },
@@ -167,6 +188,7 @@ export const MOCK_TRIPS: Trip[] = [
                 timestamp: '11:35 AM',
             },
         ],
+        stops: [],
         route: [
             { lat: -23.5500, lng: -46.6400 },
             { lat: -23.5550, lng: -46.6450 },
@@ -191,6 +213,7 @@ export const MOCK_TRIPS: Trip[] = [
         endTime: '10:30 AM',
         status: 'concluida',
         alerts: [],
+        stops: [],
         route: [
             { lat: -23.5400, lng: -46.6300 },
             { lat: -23.5450, lng: -46.6350 },
@@ -212,6 +235,7 @@ export const MOCK_TRIPS: Trip[] = [
         endTime: 'Em andamento',
         status: 'em_andamento',
         alerts: [],
+        stops: [],
         route: [
             { lat: -23.5329, lng: -46.7172 },
             { lat: -23.5350, lng: -46.7100 },
@@ -232,6 +256,7 @@ export const MOCK_TRIPS: Trip[] = [
         endTime: '09:30 AM',
         status: 'concluida',
         alerts: [],
+        stops: [],
         route: [
             { lat: -23.5200, lng: -46.7000 },
             { lat: -23.5250, lng: -46.7050 },
@@ -260,6 +285,17 @@ export const MOCK_TRIPS: Trip[] = [
                 position: { lat: -23.5475, lng: -46.6361 },
                 timestamp: '10:30 AM',
             },
+        ],
+        stops: [
+            {
+                id: 's5',
+                name: 'Parada Consolação',
+                position: { lat: -23.5430, lng: -46.6260 },
+                arrivalTime: '10:18 AM',
+                departureTime: '10:20 AM',
+                passengersBoarded: 15,
+                type: 'common',
+            }
         ],
         route: [
             { lat: -23.5400, lng: -46.6200 },
