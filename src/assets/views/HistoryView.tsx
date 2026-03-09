@@ -122,6 +122,7 @@ const HistoryView = ({ trips, drivers, onTripClick, alertsFilter }: HistoryViewP
                         <thead>
                             <tr>
                                 <th>Motorista</th>
+                                <th>Matrícula</th>
                                 <th>Data</th>
                                 <th>Real</th>
                                 <th>Plan</th>
@@ -161,6 +162,9 @@ const HistoryView = ({ trips, drivers, onTripClick, alertsFilter }: HistoryViewP
                                                     </div>
                                                 </div>
                                             </div>
+                                        </td>
+                                        <td className="cell-muted" style={{ whiteSpace: 'nowrap' }}>
+                                            {driver?.registrationNumber}
                                         </td>
                                         <td className="cell-muted">{formatDateBR(trip.date)}</td>
                                         <td>
@@ -205,7 +209,7 @@ const HistoryView = ({ trips, drivers, onTripClick, alertsFilter }: HistoryViewP
                             })}
                             {filteredTrips.length === 0 && (
                                 <tr>
-                                    <td colSpan={10} className="empty-row">
+                                    <td colSpan={11} className="empty-row">
                                         {searchQuery ? 'Nenhuma viagem encontrada para esta busca' : 'Nenhuma viagem encontrada'}
                                     </td>
                                 </tr>

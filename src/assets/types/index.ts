@@ -52,6 +52,7 @@ export interface Trip {
 
 export interface Driver {
   id: string;
+  registrationNumber: string;
   name: string;
   avatar: string;
   vehicle: string;

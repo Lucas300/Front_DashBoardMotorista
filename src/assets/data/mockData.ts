@@ -3,6 +3,7 @@ import type { Driver, Trip } from '../types';
 export const MOCK_DRIVERS: Driver[] = [
     {
         id: 'd1',
+        registrationNumber: 'MAT-10101',
         name: 'Matheus Souza',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Matheus',
         vehicle: 'Paradiso G7 1200',
@@ -17,8 +18,9 @@ export const MOCK_DRIVERS: Driver[] = [
     },
     {
         id: 'd2',
-        name: 'Thiago Tavares',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Osasco',
+        registrationNumber: 'MAT-10254',
+        name: 'Diego G. Almeida',
+        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Diego',
         vehicle: 'Paradiso G7 1800',
         licensePlate: '2024-4',
         status: 'em_rota',
@@ -31,6 +33,7 @@ export const MOCK_DRIVERS: Driver[] = [
     },
     {
         id: 'd3',
+        registrationNumber: 'MAT-11005',
         name: 'João R. Silva',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Joao',
         vehicle: 'Paradiso New G7 1600',
@@ -45,6 +48,7 @@ export const MOCK_DRIVERS: Driver[] = [
     },
     {
         id: 'd4',
+        registrationNumber: 'MAT-11124',
         name: 'Diadema Santos',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Diadema',
         vehicle: 'Irizar i6',
@@ -59,6 +63,7 @@ export const MOCK_DRIVERS: Driver[] = [
     },
     {
         id: 'd5',
+        registrationNumber: 'MAT-11450',
         name: 'Lucas Daniel',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Maria',
         vehicle: '17-230 OD / 18-330 OT',
@@ -73,6 +78,7 @@ export const MOCK_DRIVERS: Driver[] = [
     },
     {
         id: 'd6',
+        registrationNumber: 'MAT-11500',
         name: 'Carlos Lima',
         avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Carlos',
         vehicle: 'Caio Apache VIP',

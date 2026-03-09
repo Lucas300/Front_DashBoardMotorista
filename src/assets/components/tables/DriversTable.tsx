@@ -62,6 +62,7 @@ const DriversTable = ({ drivers, onDriverClick }: DriversTableProps) => {
                     <thead>
                         <tr>
                             <th>Motorista</th>
+                            <th>Matrícula</th>
                             <th>Carro</th>
                             <th>Status</th>
                             <th>Distância</th>
@@ -84,6 +85,9 @@ const DriversTable = ({ drivers, onDriverClick }: DriversTableProps) => {
                                             <span className="driver-name">{driver.name}</span>
                                         </div>
                                     </td>
+                                    <td className="cell-muted" style={{ whiteSpace: 'nowrap' }}>
+                                        {driver.registrationNumber}
+                                    </td>
                                     <td className="cell-muted">{driver.licensePlate}</td>
                                     <td>
                                         <span className={`status-badge ${cfg.color}`}>{cfg.label}</span>
@@ -98,7 +102,7 @@ const DriversTable = ({ drivers, onDriverClick }: DriversTableProps) => {
                         })}
                         {filtered.length === 0 && (
                             <tr>
-                                <td colSpan={6} className="empty-row">Nenhum motorista encontrado</td>
+                                <td colSpan={7} className="empty-row">Nenhum motorista encontrado</td>
                             </tr>
                         )}
                     </tbody>
