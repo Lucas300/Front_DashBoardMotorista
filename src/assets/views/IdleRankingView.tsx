@@ -1,7 +1,8 @@
 import { Trophy, Medal } from 'lucide-react';
 import type { Driver, Trip } from '../types';
 import { calculateTripIdleKm } from '../utils/tripUtils';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import FilterDropdown from '../components/tables/FilterDropdown';
 
 interface IdleRankingViewProps {
     drivers: Driver[];
@@ -19,6 +20,13 @@ interface DriverRanking {
 }
 
 const IdleRankingView = ({ drivers, trips, onDriverClick }: IdleRankingViewProps) => {
+    const [sortOrder, setSortOrder] = useState<'most_idle' | 'least_idle'>('most_idle');
+
+    const sortOptions = [
+        { value: 'most_idle', label: 'Mais ocioso' },
+        { value: 'least_idle', label: 'Menos ocioso' }
+    ];
+
     // Calculate ranking data with dynamic idle KM
     const rankingData: DriverRanking[] = useMemo(() => {
         const data = drivers.map(driver => {
@@ -35,11 +43,17 @@ const IdleRankingView = ({ drivers, trips, onDriverClick }: IdleRankingViewProps
             };
         });
 
-        // Sort by totalIdleKm descending
+        // Sort by totalIdleKm based on sortOrder
         return data
-            .sort((a, b) => b.totalIdleKm - a.totalIdleKm)
+            .sort((a, b) => {
+                if (sortOrder === 'most_idle') {
+                    return b.totalIdleKm - a.totalIdleKm;
+                } else {
+                    return a.totalIdleKm - b.totalIdleKm;
+                }
+            })
             .map((item, index) => ({ ...item, rank: index + 1 }));
-    }, [drivers, trips]);
+    }, [drivers, trips, sortOrder]);
 
     const getRankBadge = (rank: number) => {
         if (rank === 1) {
@@ -78,6 +92,13 @@ const IdleRankingView = ({ drivers, trips, onDriverClick }: IdleRankingViewProps
                 <div className="table-toolbar">
                     <div className="table-toolbar-left">
                         <h1 className="table-title">Ranking de Motoristas Ociosos</h1>
+                    </div>
+                    <div className="table-toolbar-right">
+                        <FilterDropdown
+                            options={sortOptions}
+                            selectedOption={sortOrder}
+                            onOptionChange={(val) => setSortOrder(val as 'most_idle' | 'least_idle')}
+                        />
                     </div>
                 </div>
 
